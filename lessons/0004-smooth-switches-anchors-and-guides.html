@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 04 · Smooth Switches — Anchors &amp; Guide Fingers</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:31px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+  .concept{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+
+  /* Switch trainer */
+  .trainer{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .pairpick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:6px;}
+  .pairpick button{font-family:inherit;font-size:15px;background:#fff;color:var(--accent);border:1px solid var(--accent);padding:7px 14px;border-radius:8px;cursor:pointer;}
+  .pairpick button.sel{background:var(--accent);color:#fff;}
+  .hintbox{font-size:15px;color:var(--ink);background:#faf6ee;border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:14px 0;min-height:44px;}
+  .hintbox b{color:var(--accent);}
+  .now{text-align:center;margin:14px 0 6px;}
+  .now .name{font-size:72px;font-weight:800;font-family:sans-serif;color:var(--accent);line-height:1;}
+
+  /* diagram pair */
+  .dpair{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px;}
+  .dcard{border:2px solid var(--line);border-radius:12px;padding:8px 10px 4px;background:#fdfbf6;transition:box-shadow .12s,border-color .12s,transform .06s;}
+  .dcard.active{border-color:var(--accent);box-shadow:0 6px 16px rgba(168,84,31,.28);transform:translateY(-3px);}
+  .dcard .cname{font-family:sans-serif;font-weight:800;font-size:20px;text-align:center;color:var(--accent);margin-bottom:2px;}
+  .arrow{font-size:30px;color:var(--muted);font-family:sans-serif;}
+  .greenkey{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--good);vertical-align:middle;margin:0 2px;}
+  .diaglegend{font-size:13px;color:var(--muted);text-align:center;margin-top:2px;}
+
+  .prep{color:var(--bad);font-weight:700;font-family:sans-serif;text-align:center;min-height:24px;font-size:18px;}
+  .beats{display:flex;gap:10px;justify-content:center;margin:10px 0;}
+  .bd{width:42px;height:42px;border-radius:10px;border:2px solid var(--line);background:#faf6ee;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:18px;font-weight:700;color:var(--accent);transition:transform .06s,background .12s;}
+  .bd.active{background:var(--glow);border-color:var(--accent);transform:translateY(-3px);color:#3a2200;}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:14px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:150px;accent-color:var(--accent);}
+  .big{font-size:24px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+
+  /* counter */
+  .counter{display:flex;gap:20px;justify-content:center;align-items:center;margin-top:16px;font-family:sans-serif;}
+  .counter .num{font-size:40px;font-weight:800;color:var(--accent);}
+  .counter .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 04 · toward fingerstyle</div>
+  <h1>Smooth Switches — Anchors &amp; Guide Fingers</h1>
+  <p class="sub">The one trick that turns clunky chord changes into effortless ones.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> pick the switch that trips you up most and drill it until you
+  can change <b>cleanly on the beat</b>. You'll learn to stop rebuilding chords
+  from scratch — and start letting fingers <i>guide</i> the way.
+</div>
+
+<h2>The big idea: don't rebuild — reuse</h2>
+<p>Beginners lift <i>all</i> fingers off, then stab for the new shape. Slow and
+messy. The fix is two moves the pros use constantly:</p>
+<div class="concept">
+  <b>① Anchor finger</b> — a finger shared by both chords. Keep it <i>planted</i>
+  and pivot the others around it.<br><br>
+  <b>② Guide finger</b> — a finger that slides along the <i>same string</i> to a
+  new fret. Keep it lightly touching and let it glide — it steers your hand to the
+  right place.
+</div>
+
+<h2>Your switch cheat-sheet</h2>
+<p>For your four chords (see the
+<a href="../reference/00-chords-and-right-hand.html">reference</a> for shapes):</p>
+<ul>
+  <li><b>C ↔ G:</b> your ring finger (3) hops one string over, staying at the
+    <i>3rd fret</i> (A-string → low-E). Same fret = a natural guide.</li>
+  <li><b>Em ↔ C:</b> tiny move — fingers stay bunched near frets 2–3. Keep them
+    hovering; don't fly away.</li>
+  <li><b>Em → G:</b> think of G as Em "growing" — fingers 2 &amp; 3 shift up a
+    string and finger 1 joins. Same finger family.</li>
+  <li><b>G ↔ D:</b> the biggest reshape — the "boss" switch. Prep it a full beat
+    early; that's what the red warning is for.</li>
+</ul>
+
+<h2>The switch trainer</h2>
+<p>Pick a pair. The trainer gives you <b>two beats on each chord</b> and flashes a
+red <b>"switch!"</b> on the last beat. Count how many <b>clean</b> changes you make
+in one loop-set — that's your score to beat next time.</p>
+
+<div class="trainer">
+  <div class="pairpick" id="pairpick"></div>
+  <div class="hintbox" id="hint">Pick a pair to see its anchor/guide tip.</div>
+  <div class="dpair" id="dpair"></div>
+  <div class="diaglegend"><span class="greenkey"></span> green = the anchor / guide finger to keep planted or slide</div>
+  <div class="now"><div class="name" id="nowName">C</div></div>
+  <div class="prep" id="prep">&nbsp;</div>
+  <div class="beats" id="beats"></div>
+  <div class="controls">
+    <button id="startBtn">▶ Start</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="36" max="80" value="46" step="2">
+      <span class="big" id="bpm">46</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="counter">
+    <div><div class="num" id="changeCount">0</div><div class="lbl">changes made</div></div>
+  </div>
+</div>
+
+<div class="tip"><b>The one-minute-changes drill:</b> a JustinGuitar classic —
+count how many times you can switch between two chords in 60 seconds. Beat your
+score each day. Watch the number climb; that's motivation you can measure.</div>
+
+<h2>Practice routine (about 15 min)</h2>
+<div class="step"><span class="n">1</span><b>Find the anchor (3 min).</b> For your worst pair, form both chords slowly and spot the finger that stays or slides. Say it out loud: "ring finger guides."</div>
+<div class="step"><span class="n">2</span><b>Slow-motion switches (5 min).</b> No metronome. Change back and forth, keeping the anchor planted. Aim for <i>smooth</i>, not fast.</div>
+<div class="step"><span class="n">3</span><b>On the beat (5 min).</b> Start the trainer at 46 BPM. Land the new chord exactly on beat 1. Count your clean changes.</div>
+<div class="step"><span class="n">2</span><b>Bring the pick back (2 min).</b> Add your soft p-i-m-a picking to the pair. Music, not just drilling.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me <b>which pair stayed slowest</b> and roughly how many clean changes
+you got. If the switches feel good, next lesson we finally play a <b>real song</b>
+— so start thinking of a Thai or English track you'd love to learn. 🎶</p>
+
+<div class="tip"><b>Ask your teacher.</b> Tell me the exact pair that fights you and
+I'll give you a finger-by-finger walkthrough for that one change.</div>
+
+<footer>
+  Lesson 04 · Guitar workspace · Builds on
+  <a href="0003-your-first-song-loop.html">Lesson 03</a> · Drill inspired by the
+  "One Minute Changes" method at
+  <a href="https://www.justinguitar.com/guitar-lessons">JustinGuitar</a>.
+</footer>
+</div>
+
+<script>
+// Chord shapes: strings low-E(6) -> high-E(1). fret 0=open, -1=muted, >0=fret; fingers 1-4.
+const CHORDS={
+  C:  {frets:[-1,3,2,0,1,0], fingers:[0,3,2,0,1,0]},
+  G:  {frets:[3,2,0,0,0,3],  fingers:[2,1,0,0,0,3]},
+  D:  {frets:[-1,-1,0,2,3,2],fingers:[0,0,0,1,3,2]},
+  Em: {frets:[0,2,2,0,0,0],  fingers:[0,2,3,0,0,0]},
+};
+
+// Chord pairs to drill. `guide` = the finger number to highlight green (anchor/guide);
+// null when there's no shared finger (the "boss" reshapes).
+const PAIRS=[
+  {a:"C", b:"G",  guide:3, hint:"<b>Guide:</b> your <b>ring finger (3)</b> stays at the 3rd fret and hops from the A-string (C) to the low-E string (G). Let it glide across, don't lift it high."},
+  {a:"Em",b:"C",  guide:2, hint:"<b>Anchor:</b> <b>finger 2</b> is used in both — keep it planted-ish near the 2nd/3rd fret and pivot the others. A small, tidy move, not a big reach."},
+  {a:"Em",b:"G",  guide:2, hint:"<b>Family move:</b> G is like Em 'grown'. Fingers <b>2 &amp; 3</b> shift up one string and finger <b>1</b> joins on the A-string. Move them as a group."},
+  {a:"G", b:"D",  guide:null, hint:"<b>Boss switch:</b> biggest reshape — no shared finger. <b>Prep a full beat early</b> (watch the red warning) and aim your fingers at the D triangle before you arrive."},
+  {a:"C", b:"D",  guide:null, hint:"<b>Reshape:</b> release C, form the D triangle on strings 3-2-1. Finger 2 moves from the D-string to the high-E — trace that path."},
+  {a:"D", b:"Em", guide:null, hint:"<b>Relax into it:</b> Em is the easiest shape. From D, drop fingers 2 &amp; 3 onto the A &amp; D strings (2nd fret) and relax finger 1 off. Big release — use the beat-4 warning."},
+];
+
+// Draw a compact chord diagram. If highlightFinger is set, that finger's dot turns green.
+function chordSVG(name,highlightFinger){
+  const c=CHORDS[name];
+  const W=92,H=112,padX=14,padTop=24,rows=4,cols=6;
+  const gridW=W-padX*2,gridH=68,colGap=gridW/(cols-1),rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="2.5" fill="#1c1a17"/>`;
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0"/>`;}
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0"/>`;}
+  c.frets.forEach((f,i)=>{
+    const x=padX+i*colGap;
+    if(f===-1){s+=`<text x="${x}" y="${padTop-8}" text-anchor="middle" font-size="11" fill="#6b6459">✕</text>`;}
+    else if(f===0){s+=`<circle cx="${x}" cy="${padTop-10}" r="4" fill="none" stroke="#1c1a17" stroke-width="1.4"/>`;}
+    else{
+      const y=padTop+(f-0.5)*rowGap;
+      const fg=c.fingers[i];
+      const isHi=(highlightFinger&&fg===highlightFinger);
+      s+=`<circle cx="${x}" cy="${y}" r="7" fill="${isHi?'#2e7d32':'#1c1a17'}"/>`;
+      if(fg>0)s+=`<text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="10" fill="#fff" font-family="sans-serif">${fg}</text>`;
+    }
+  });
+  s+=`</svg>`;return s;
+}
+
+const pairHost=document.getElementById("pairpick");
+PAIRS.forEach((p,i)=>{
+  const b=document.createElement("button");
+  b.textContent=p.a+" ↔ "+p.b; b.dataset.i=i;
+  b.addEventListener("click",()=>selectPair(i));
+  pairHost.appendChild(b);
+});
+const beatsHost=document.getElementById("beats");
+for(let i=1;i<=4;i++){
+  const d=document.createElement("div");
+  d.className="bd"; d.id="bd"+i; d.textContent=i;
+  beatsHost.appendChild(d);
+}
+
+let pairIdx=0, audioCtx=null, timer=null, beat=0, onFirst=true, changes=0;
+const tempo=document.getElementById("tempo"),bpm=document.getElementById("bpm");
+const startBtn=document.getElementById("startBtn"),stopBtn=document.getElementById("stopBtn");
+const nowName=document.getElementById("nowName"),prep=document.getElementById("prep");
+const hint=document.getElementById("hint"),changeCount=document.getElementById("changeCount");
+tempo.addEventListener("input",()=>bpm.textContent=tempo.value);
+
+const dpair=document.getElementById("dpair");
+function renderDiagrams(){
+  const P=PAIRS[pairIdx];
+  dpair.innerHTML=
+    `<div class="dcard" id="cardA"><div class="cname">${P.a}</div>${chordSVG(P.a,P.guide)}</div>`+
+    `<div class="arrow">⇄</div>`+
+    `<div class="dcard" id="cardB"><div class="cname">${P.b}</div>${chordSVG(P.b,P.guide)}</div>`;
+}
+function glow(which){ // "a" or "b"
+  const A=document.getElementById("cardA"),B=document.getElementById("cardB");
+  if(A)A.classList.toggle("active",which==="a");
+  if(B)B.classList.toggle("active",which==="b");
+}
+function selectPair(i){
+  pairIdx=i;
+  document.querySelectorAll("#pairpick button").forEach(b=>b.classList.toggle("sel",+b.dataset.i===i));
+  hint.innerHTML=PAIRS[i].hint;
+  nowName.textContent=PAIRS[i].a;
+  renderDiagrams();
+  glow("a");
+}
+
+function click(strong){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.frequency.value=strong?1100:760;
+  g.gain.setValueAtTime(strong?0.5:0.28,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.09);
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.1);
+}
+
+// 4 beats total per cycle: beats 1-2 = chord A, beats 3-4 = chord B.
+// Warn on beat 2 (before B) and beat 4 (before A).
+function tick(){
+  for(let i=1;i<=4;i++)document.getElementById("bd"+i).classList.remove("active");
+  document.getElementById("bd"+(beat+1)).classList.add("active");
+  click(beat===0);
+  const P=PAIRS[pairIdx];
+  if(beat===1){ prep.textContent="↻ switch to "+P.b+" !"; }
+  else if(beat===3){ prep.textContent="↻ switch to "+P.a+" !"; }
+  else{ prep.innerHTML="&nbsp;"; }
+  beat++;
+  if(beat>3) beat=0;
+  // set chord display + glow + count a change at each switch point (start of beats 3 and 1)
+  if(beat===2){ nowName.textContent=P.b; glow("b"); changes++; changeCount.textContent=changes; }
+  if(beat===0){ nowName.textContent=P.a; glow("a"); changes++; changeCount.textContent=changes; }
+}
+function interval(){return 60000/parseInt(tempo.value,10);}
+function start(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(timer)return;
+  beat=0;changes=0;changeCount.textContent=0;
+  nowName.textContent=PAIRS[pairIdx].a;
+  tick();
+  timer=setInterval(tick,interval());
+  startBtn.disabled=true;stopBtn.disabled=false;
+  tempo.oninput=()=>{bpm.textContent=tempo.value;clearInterval(timer);timer=setInterval(tick,interval());};
+}
+function stop(){
+  clearInterval(timer);timer=null;
+  for(let i=1;i<=4;i++)document.getElementById("bd"+i).classList.remove("active");
+  prep.innerHTML="&nbsp;";
+  startBtn.disabled=false;stopBtn.disabled=true;
+  tempo.oninput=()=>bpm.textContent=tempo.value;
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+selectPair(0);
+</script>
+</body>
+</html>

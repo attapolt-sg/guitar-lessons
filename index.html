@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Acoustic Guitar — Lessons</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:48px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:34px;margin:6px 0 6px;letter-spacing:-.01em;}
+  .sub{color:var(--muted);font-size:16px;}
+  h2{font-size:22px;margin:38px 0 12px;border-left:4px solid var(--accent);padding-left:12px;}
+  p,li{font-size:17px;}
+  a{color:var(--accent);text-decoration:none;}
+
+  /* reference callout */
+  .ref{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:20px 0;}
+  .ref a{font-weight:700;}
+
+  /* lesson cards */
+  .card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:12px 0;transition:box-shadow .12s,transform .06s,border-color .12s;}
+  .card:hover{box-shadow:0 6px 16px rgba(168,84,31,.16);transform:translateY(-2px);border-color:var(--accent);}
+  .card .no{display:inline-block;background:var(--accent);color:#fff;font-family:sans-serif;font-size:13px;font-weight:700;padding:2px 9px;border-radius:20px;margin-right:8px;}
+  .card .ttl{font-size:19px;font-weight:700;color:var(--ink);}
+  .card .desc{color:var(--muted);font-size:15px;margin-top:4px;}
+  footer{margin-top:48px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Acoustic guitar · a self-paced journey</div>
+  <h1>Learning Acoustic Guitar 🎸</h1>
+  <p class="sub">Toward fingerstyle — clean fretting, steady rhythm, real songs.
+  Each lesson is interactive: play along in your browser.</p>
+</header>
+
+<div class="ref">
+  📌 <b>Keep this open while you play:</b>
+  <a href="reference/00-chords-and-right-hand.html">Reference — Chords &amp; the Right Hand</a>
+  (the four chord shapes + the p·i·m·a fingerpicking guide).
+</div>
+
+<h2>The lessons</h2>
+
+<a class="card" href="lessons/0001-your-first-fingerpicking-pattern.html">
+  <div><span class="no">01</span><span class="ttl">Your First Fingerpicking Pattern</span></div>
+  <div class="desc">The p·i·m·a pattern — building a steady right-hand pulse with a metronome trainer.</div>
+</a>
+
+<a class="card" href="lessons/0002-clean-fingers-every-string-rings.html">
+  <div><span class="no">02</span><span class="ttl">Clean Fingers — Every String Rings</span></div>
+  <div class="desc">Fretting on the fingertips so every string sounds clean, no buzzes. String-by-string checker.</div>
+</a>
+
+<a class="card" href="lessons/0003-your-first-song-loop.html">
+  <div><span class="no">03</span><span class="ttl">Your First Song Loop — G · D · Em · C</span></div>
+  <div class="desc">Fingerpicking through a four-chord progression — keeping the pulse across chord changes.</div>
+</a>
+
+<a class="card" href="lessons/0004-smooth-switches-anchors-and-guides.html">
+  <div><span class="no">04</span><span class="ttl">Smooth Switches — Anchors &amp; Guide Fingers</span></div>
+  <div class="desc">The trick that makes chord changes effortless: keep a shared finger planted or sliding. Switch trainer.</div>
+</a>
+
+<a class="card" href="lessons/0005-zombie-fingerstyle-and-strumming.html">
+  <div><span class="no">05</span><span class="ttl">"Zombie" — Fingerstyle &amp; Strumming</span></div>
+  <div class="desc">Your first real song. One Em→C→G→D loop, two ways to play it — with an interactive play-along player.</div>
+</a>
+
+<footer>
+  A personal guitar-learning workspace · Lessons built to be played along with in the browser.
+</footer>
+</div>
+</body>
+</html>

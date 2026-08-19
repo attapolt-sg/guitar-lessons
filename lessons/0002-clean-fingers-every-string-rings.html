@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 02 · Clean Fingers — Every String Rings</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:33px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+  .myth{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+
+  /* fix cards */
+  .fixes{display:flex;flex-direction:column;gap:12px;margin:16px 0;}
+  .fix{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .fix .ic{font-size:26px;line-height:1;flex:0 0 auto;}
+  .fix b{color:var(--accent);}
+
+  /* Diagnostic checker */
+  .checker{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .chordpick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+  .chordpick button{font-family:inherit;font-size:16px;background:#fff;color:var(--accent);border:1px solid var(--accent);padding:8px 18px;border-radius:8px;cursor:pointer;}
+  .chordpick button.sel{background:var(--accent);color:#fff;}
+  .layout{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;margin-top:10px;}
+  .diagram{flex:0 0 auto;}
+  .strings{flex:1;min-width:260px;}
+  .strow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #eee5d5;}
+  .slabel{width:120px;font-size:15px;}
+  .slabel .muted{color:var(--muted);font-size:13px;}
+  .srow-btns{display:flex;gap:8px;}
+  .mini{font-family:inherit;font-size:14px;border-radius:7px;padding:6px 12px;cursor:pointer;border:1px solid var(--line);background:#faf6ee;}
+  .mini.clean.on{background:#e5f2e5;border-color:var(--good);color:var(--good);font-weight:700;}
+  .mini.buzz.on{background:#f7e3e0;border-color:var(--bad);color:var(--bad);font-weight:700;}
+  .verdict{margin-top:14px;font-size:16px;min-height:24px;font-family:sans-serif;}
+  .verdict.win{color:var(--good);font-weight:700;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 02 · toward fingerstyle</div>
+  <h1>Clean Fingers — Every String Rings</h1>
+  <p class="sub">You held 60 BPM. Now let's make every note sound clear, even when you dig in.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> play each chord one string at a time and get <b>every</b>
+  string to ring clean — no buzz, no dead notes. You'll pinpoint exactly which
+  finger is leaning over, and fix it.
+</div>
+
+<div class="myth">
+  <b>Myth, busted:</b> "My fingers are too big/chubby." Almost never true —
+  plenty of large-handed players play spotless. Buzzing comes from fretting with
+  the flat <i>pad</i> of the finger. The cure is the <i>tip</i>. It's technique,
+  not anatomy.
+</div>
+
+<h2>The three fixes</h2>
+<div class="fixes">
+  <div class="fix"><div class="ic">☝️</div><div><b>Fret on your fingertips.</b>
+    Curl each finger so it drops straight down like a little hammer, contacting on
+    the tip near the nail. The tip is narrow, so it won't flop onto the next string.</div></div>
+  <div class="fix"><div class="ic">✋</div><div><b>Thumb in the middle of the neck's back.</b>
+    Not wrapped over the top. A thumb behind the neck automatically lifts your
+    knuckles and puts fingers on their tips.</div></div>
+  <div class="fix"><div class="ic">📏</div><div><b>Press just behind the fret wire.</b>
+    Not in the middle of the fret space. You need far less pressure there, so your
+    hand stays relaxed and fingers don't sprawl.</div></div>
+</div>
+
+<div class="tip">
+  <b>And ease off the pluck.</b> You don't need to pick hard. In fingerstyle,
+  volume comes from a relaxed, controlled pull <i>toward your palm</i> — not force.
+  Digging in is what shifts your fretting hand in the first place.
+</div>
+
+<h2>The diagnostic checker</h2>
+<p>Pick a chord. Hold it on the guitar. Then pluck <b>one string at a time</b>,
+slowly. For each string, tap <b>Clean</b> or <b>Buzz/dead</b>. The checker points
+you straight at the finger to fix.</p>
+
+<div class="checker">
+  <div class="chordpick" id="chordpick"></div>
+  <div class="layout">
+    <div class="diagram" id="diagram"></div>
+    <div class="strings" id="strings"></div>
+  </div>
+  <div class="verdict" id="verdict">Pick a chord to begin.</div>
+</div>
+
+<h2>Practice routine (about 15 min)</h2>
+<div class="step"><span class="n">1</span><b>Set the hand (2 min).</b> Thumb behind neck, fingers curled. Form <b>Em</b> — the easiest — and check all 6 strings ring.</div>
+<div class="step"><span class="n">2</span><b>Hunt the buzz (8 min).</b> Do <b>C</b>, then <b>G</b>, then <b>D</b> in the checker. For any buzz: lift that finger, re-place it on the very tip, closer to the fret wire. Re-test.</div>
+<div class="step"><span class="n">3</span><b>Gentle pluck (3 min).</b> Play each chord with a soft p-i-m-a from Lesson 01. Notice: softer pluck = fingers stay put = cleaner sound.</div>
+<div class="step"><span class="n">4</span><b>The "chubby finger" reframe (2 min).</b> Consciously roll onto your fingertips. Feel how a big finger still fits when it stands tall instead of lying flat.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me <b>which chord + string was the worst offender</b> (e.g. "C — the
+B string buzzed"). That tells me whether to keep polishing open chords or move on.</p>
+<p><b>Next:</b> <a href="0003-your-first-song-loop.html">Lesson 03 · Your First Song Loop — G · D · Em · C</a>
+— join both hands into a real, looping chord progression.</p>
+
+<div class="tip"><b>Ask your teacher.</b> Send me a photo of your fretting hand if
+you want — I can often spot a flat finger or a low thumb instantly.</div>
+
+<footer>
+  Lesson 02 · Guitar workspace · Chord shapes per the
+  <a href="../reference/00-chords-and-right-hand.html">Chords &amp; Right-Hand reference</a> ·
+  Structured course home: <a href="https://www.justinguitar.com/guitar-lessons">JustinGuitar</a>.
+</footer>
+</div>
+
+<script>
+// Chord data: strings low-E(6) -> high-E(1). fret 0=open, -1=muted, >0 = fret + finger.
+// noteName = the pitch that string should sound in this chord (for friendly labels).
+const CHORDS = {
+  Em: { frets:[0,2,2,0,0,0], fingers:[0,2,3,0,0,0],
+        notes:["E","B","E","G","B","E"] },
+  C:  { frets:[-1,3,2,0,1,0], fingers:[0,3,2,0,1,0],
+        notes:["—","C","E","G","C","E"] },
+  G:  { frets:[3,2,0,0,0,3], fingers:[2,1,0,0,0,3],
+        notes:["G","B","D","G","B","G"] },
+  D:  { frets:[-1,-1,0,2,3,2], fingers:[0,0,0,1,3,2],
+        notes:["—","—","D","A","D","F#"] },
+};
+// Common culprit hint per chord: which finger tends to lean, and onto what.
+const HINTS = {
+  Em: "Em is the friendliest — if it buzzes, fingers 2 & 3 are lying flat. Stand them up on the tips.",
+  C:  "Classic trouble spot: finger 1 (on the B string) flattens and mutes the high E. Curl it up onto the tip.",
+  G:  "Finger 2 on the A string often leans and deadens the low E or D. Also keep finger 3 arched off the B string.",
+  D:  "Strings 6 & 5 are silent in D — don't play them. If a fretted string buzzes, it's usually finger 3 (B string) lying flat onto the high E.",
+};
+const STRING_NAMES = ["Low E (6th)","A (5th)","D (4th)","G (3rd)","B (2nd)","High E (1st)"];
+
+let current="Em";
+const marks={}; // marks[chord] = array of "clean"/"buzz"/null per string index
+
+// ---- chord diagram SVG (reused style from reference) ----
+function chordSVG(c){
+  const W=120,H=150,padX=18,padTop=30,rows=4,cols=6;
+  const gridW=W-padX*2,gridH=90,colGap=gridW/(cols-1),rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="3" fill="#1c1a17"/>`;
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0"/>`;}
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0"/>`;}
+  c.frets.forEach((f,i)=>{
+    const x=padX+i*colGap;
+    if(f===-1){s+=`<text x="${x}" y="${padTop-10}" text-anchor="middle" font-size="13" fill="#6b6459">✕</text>`;}
+    else if(f===0){s+=`<circle cx="${x}" cy="${padTop-13}" r="5" fill="none" stroke="#1c1a17" stroke-width="1.5"/>`;}
+    else{const y=padTop+(f-0.5)*rowGap;s+=`<circle cx="${x}" cy="${y}" r="8" fill="#1c1a17"/>`;
+      if(c.fingers[i]>0)s+=`<text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" fill="#fff" font-family="sans-serif">${c.fingers[i]}</text>`;}
+  });
+  s+=`</svg>`; return s;
+}
+
+// ---- build chord picker ----
+const pick=document.getElementById("chordpick");
+Object.keys(CHORDS).forEach(name=>{
+  const b=document.createElement("button");
+  b.textContent=name; b.dataset.c=name;
+  b.addEventListener("click",()=>select(name));
+  pick.appendChild(b);
+});
+
+function select(name){
+  current=name;
+  if(!marks[name]) marks[name]=Array(6).fill(null);
+  document.querySelectorAll("#chordpick button").forEach(b=>b.classList.toggle("sel",b.dataset.c===name));
+  document.getElementById("diagram").innerHTML=chordSVG(CHORDS[name]);
+  renderStrings();
+  updateVerdict();
+}
+
+function renderStrings(){
+  const c=CHORDS[current], host=document.getElementById("strings");
+  host.innerHTML="";
+  // show highest-pitch string on top (index 5) down to lowest — like looking at the guitar
+  for(let i=5;i>=0;i--){
+    const played=c.frets[i]!==-1;
+    const row=document.createElement("div");
+    row.className="strow";
+    const label=document.createElement("div");
+    label.className="slabel";
+    if(!played){
+      label.innerHTML=`<b>${STRING_NAMES[i]}</b><br><span class="muted">not played in ${current} ✕</span>`;
+      row.appendChild(label);
+      host.appendChild(row);
+      continue;
+    }
+    const fr=c.frets[i]===0?"open":`fret ${c.frets[i]} · finger ${c.fingers[i]}`;
+    label.innerHTML=`<b>${STRING_NAMES[i]}</b><br><span class="muted">${c.notes[i]} · ${fr}</span>`;
+    const btns=document.createElement("div");
+    btns.className="srow-btns";
+    const clean=document.createElement("button");
+    clean.className="mini clean"; clean.textContent="Clean ✓";
+    const buzz=document.createElement("button");
+    buzz.className="mini buzz"; buzz.textContent="Buzz/dead ✗";
+    clean.classList.toggle("on",marks[current][i]==="clean");
+    buzz.classList.toggle("on",marks[current][i]==="buzz");
+    clean.onclick=()=>{marks[current][i]="clean";renderStrings();updateVerdict();};
+    buzz.onclick=()=>{marks[current][i]="buzz";renderStrings();updateVerdict();};
+    btns.appendChild(clean); btns.appendChild(buzz);
+    row.appendChild(label); row.appendChild(btns);
+    host.appendChild(row);
+  }
+}
+
+function updateVerdict(){
+  const c=CHORDS[current], m=marks[current];
+  const v=document.getElementById("verdict");
+  const playable=[]; for(let i=0;i<6;i++) if(c.frets[i]!==-1) playable.push(i);
+  const done=playable.every(i=>m[i]);
+  const buzzed=playable.filter(i=>m[i]==="buzz");
+  if(!done){ v.className="verdict"; v.textContent="Test each played string above…"; return; }
+  if(buzzed.length===0){
+    v.className="verdict win";
+    v.textContent=`🎉 ${current} rings clean on every string! Try the next chord.`;
+    return;
+  }
+  const which=buzzed.map(i=>{
+    const fg=c.fingers[i];
+    return fg>0 ? `${STRING_NAMES[i]} (finger ${fg})` : `${STRING_NAMES[i]} (open — a neighbour finger is leaning on it)`;
+  }).join(", ");
+  v.className="verdict";
+  v.innerHTML=`Buzzing: <b style="color:#b3402f">${which}</b>.<br>${HINTS[current]}`;
+}
+
+// init
+select("Em");
+</script>
+</body>
+</html>

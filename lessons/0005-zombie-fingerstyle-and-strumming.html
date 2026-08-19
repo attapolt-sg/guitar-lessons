@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 05 · "Zombie" — Fingerstyle &amp; Strumming</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:31px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+  .concept{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+
+  /* chord loop strip */
+  .loop{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0;}
+  .loop .c{font-family:sans-serif;font-weight:800;font-size:20px;color:var(--accent);border:2px solid var(--line);border-radius:10px;padding:8px 18px;background:#fdfbf6;}
+  .loop .sep{align-self:center;color:var(--muted);font-size:22px;}
+
+  /* player */
+  .player{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .modepick{display:flex;gap:8px;justify-content:center;margin-bottom:12px;}
+  .modepick button{font-family:inherit;font-size:15px;background:#fff;color:var(--accent);border:1px solid var(--accent);padding:7px 16px;border-radius:8px;cursor:pointer;}
+  .modepick button.sel{background:var(--accent);color:#fff;}
+  .now{text-align:center;margin:8px 0 4px;}
+  .now .name{font-size:64px;font-weight:800;font-family:sans-serif;color:var(--accent);line-height:1;}
+  .now .role{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+
+  /* chord diagram */
+  .dwrap{display:flex;justify-content:center;margin:6px 0 2px;}
+  .dcard{border:2px solid var(--accent);border-radius:12px;padding:8px 12px 4px;background:#fdfbf6;box-shadow:0 6px 16px rgba(168,84,31,.18);}
+
+  /* pluck / strum lane */
+  .lane{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .cell{width:46px;height:52px;border-radius:10px;border:2px solid var(--line);background:#faf6ee;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;transition:transform .06s,background .12s;}
+  .cell.active{background:var(--glow);border-color:var(--accent);transform:translateY(-3px);}
+  .cell .sym{font-size:22px;font-weight:800;color:var(--accent);}
+  .cell .lbl{font-size:11px;color:var(--muted);}
+  .laneNote{text-align:center;font-size:14px;color:var(--muted);min-height:20px;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:14px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:150px;accent-color:var(--accent);}
+  .big{font-size:24px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+  .toggle{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 05 · your first real song</div>
+  <h1>"Zombie" — Fingerstyle &amp; Strumming</h1>
+  <p class="sub">One four-chord loop. Two ways to play it. Zero new chords to learn.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> play The Cranberries' <b>"Zombie"</b> around its endless loop of
+  <b>Em → C → G → D</b> — first as a steady <b>fingerpick</b> (your rhythm cure), then
+  as a driving <b>strum</b>. Same four shapes you already own.
+</div>
+
+<h2>The whole song is one loop</h2>
+<p>Here's the secret that makes "Zombie" perfect for you: nearly the <i>entire</i>
+song — intro, verse, chorus — cycles through the same four chords, <b>one bar each</b>:</p>
+
+<div class="loop">
+  <span class="c">Em</span><span class="sep">→</span>
+  <span class="c">C</span><span class="sep">→</span>
+  <span class="c">G</span><span class="sep">→</span>
+  <span class="c">D</span><span class="sep">↺</span>
+</div>
+<p class="sub">Count "1&nbsp;2&nbsp;3&nbsp;4" on each chord, then move to the next. Four bars = one full loop, then it repeats.
+(The original recording dresses these up with jazzy voicings, but the four base shapes are exactly
+<a href="../reference/00-chords-and-right-hand.html">the ones you know</a>.)</p>
+
+<div class="concept">
+  <b>Why fingerstyle first?</b> A fixed finger order (<b>p-i-m-a</b>) gives you a built-in
+  metronome — it forces the steady pulse that free strumming lets you lose. Nail the loop
+  slowly with your fingers, and your <i>strumming</i> gets steadier for free.
+</div>
+
+<h2>The player — pick a mode, hit start</h2>
+<p>The player walks the <b>Em → C → G → D</b> loop for you: it shows the current chord's
+diagram, lights up each <b>pluck</b> (fingerstyle) or <b>strum</b> (strumming) in time, and
+clicks a metronome. Start slow — <b>50 BPM</b> — and only speed up when it's clean.</p>
+
+<div class="player">
+  <div class="modepick" id="modepick">
+    <button data-m="finger" class="sel">🎣 Fingerstyle</button>
+    <button data-m="strum">🎸 Strumming</button>
+  </div>
+
+  <div class="now">
+    <div class="name" id="nowName">Em</div>
+    <div class="role" id="nowRole">bar 1 of 4</div>
+  </div>
+  <div class="dwrap"><div class="dcard" id="dcard"></div></div>
+
+  <div class="lane" id="lane"></div>
+  <div class="laneNote" id="laneNote"></div>
+
+  <div class="controls">
+    <button id="startBtn">▶ Start loop</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="40" max="96" value="50" step="2">
+      <span class="big" id="bpm">50</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="controls">
+    <label class="toggle"><input type="checkbox" id="countIn" checked> 1-bar count-in before the loop</label>
+  </div>
+</div>
+
+<h2>Mode 1 — Fingerstyle pattern</h2>
+<p>One bar per chord, eight plucks in "1&nbsp;&amp;&nbsp;2&nbsp;&amp;&nbsp;3&nbsp;&amp;&nbsp;4&nbsp;&amp;":</p>
+<div class="tip">
+  <b>Pattern:</b> <code>p&nbsp;i&nbsp;m&nbsp;a&nbsp;·&nbsp;p&nbsp;i&nbsp;m&nbsp;a</code> &nbsp;— thumb on the
+  <b>bass string</b>, then index-middle-ring climb the top three strings, twice per bar.
+</div>
+<ul>
+  <li><b>p (thumb)</b> plays the chord's <i>root bass</i>: Em → 6th string, C → 5th, G → 6th, D → 4th.
+  The player shows which one under the diagram.</li>
+  <li><b>i · m · a</b> always pluck strings <b>3 · 2 · 1</b> (G-B-high&nbsp;E), same as your
+  <a href="0001-your-first-fingerpicking-pattern.html">first pattern</a>.</li>
+  <li>Keep the plucks <i>even</i>. Even &amp; slow beats fast &amp; lumpy every time.</li>
+</ul>
+
+<h2>Mode 2 — Strumming pattern</h2>
+<p>Start with the simplest thing that keeps time: <b>one down-strum per beat</b> (all
+downstrokes). When that's locked, graduate to the classic pop pattern:</p>
+<div class="tip">
+  <b>Starter:</b> <code>D&nbsp;D&nbsp;D&nbsp;D</code> (down on 1-2-3-4).<br>
+  <b>Next level:</b> <code>D&nbsp;·&nbsp;D&nbsp;U&nbsp;·&nbsp;U&nbsp;D&nbsp;U</code> — "down, down-up, up-down-up."
+  The player lights arrows so you can <i>see</i> the up-strokes land off the beat.
+</div>
+<p class="sub"><b>↓</b> = brush down toward the floor · <b>↑</b> = brush up. Loosen your wrist;
+let the pick skim the strings, don't dig.</p>
+
+<h2>Practice routine (about 20 min)</h2>
+<div class="step"><span class="n">1</span><b>Loop the chords silently (4 min).</b> No picking. Just change Em→C→G→D on a slow count, one bar each. Land every change on beat 1.</div>
+<div class="step"><span class="n">2</span><b>Fingerstyle at 50 BPM (7 min).</b> Turn on the player, Fingerstyle mode. Follow the plucks. Goal: one clean loop with no gaps at the chord changes.</div>
+<div class="step"><span class="n">3</span><b>Strum, all-downs (4 min).</b> Switch to Strumming, starter pattern. Same loop, steady downstrokes on every beat.</div>
+<div class="step"><span class="n">4</span><b>Add the up-strokes (5 min).</b> Move to the <code>D · D U · U D U</code> pattern. Slow it right down if the up-strokes trip you.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me: <b>(1)</b> fastest BPM where the fingerstyle loop stayed clean, <b>(2)</b> which
+chord change in the loop is still the sticky one, and <b>(3)</b> did the strum or the fingerpick
+feel steadier? That tells me what Lesson 06 should sharpen. 🎶</p>
+
+<footer>
+  Lesson 05 · Guitar workspace · Builds on
+  <a href="0004-smooth-switches-anchors-and-guides.html">Lesson 04</a> ·
+  Chord loop verified against
+  <a href="https://www.cifraclub.com/the-cranberries/zombie/">CifraClub — The Cranberries, "Zombie"</a>
+  (2026-08-19).
+</footer>
+</div>
+
+<script>
+// ---- Chord shapes: strings low-E(6) -> high-E(1). fret 0=open, -1=muted; fingers 1-4. ----
+const CHORDS={
+  Em:{frets:[0,2,2,0,0,0], fingers:[0,2,3,0,0,0]},
+  C: {frets:[-1,3,2,0,1,0],fingers:[0,3,2,0,1,0]},
+  G: {frets:[3,2,0,0,0,3], fingers:[2,1,0,0,0,3]},
+  D: {frets:[-1,-1,0,2,3,2],fingers:[0,0,0,1,3,2]},
+};
+// The loop order + which STRING the thumb (p) plays as the bass for each chord.
+// String numbers here are the human names (6=low E ... 1=high E).
+const LOOP=[
+  {name:"Em", bass:6, bassLbl:"6th string (low E)"},
+  {name:"C",  bass:5, bassLbl:"5th string (A)"},
+  {name:"G",  bass:6, bassLbl:"6th string (low E)"},
+  {name:"D",  bass:4, bassLbl:"4th string (D)"},
+];
+
+// ---- Draw a chord diagram (same style as the reference/other lessons) ----
+function chordSVG(name){
+  const c=CHORDS[name];
+  const W=104,H=124,padX=16,padTop=26,rows=4,cols=6;
+  const gridW=W-padX*2,gridH=76,colGap=gridW/(cols-1),rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="2.6" fill="#1c1a17"/>`;
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0"/>`;}
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0"/>`;}
+  c.frets.forEach((f,i)=>{
+    const x=padX+i*colGap;
+    if(f===-1){s+=`<text x="${x}" y="${padTop-8}" text-anchor="middle" font-size="12" fill="#6b6459">✕</text>`;}
+    else if(f===0){s+=`<circle cx="${x}" cy="${padTop-11}" r="4.5" fill="none" stroke="#1c1a17" stroke-width="1.4"/>`;}
+    else{
+      const y=padTop+(f-0.5)*rowGap, fg=c.fingers[i];
+      s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="#1c1a17"/>`;
+      if(fg>0)s+=`<text x="${x}" y="${y+3.6}" text-anchor="middle" font-size="10.5" fill="#fff" font-family="sans-serif">${fg}</text>`;
+    }
+  });
+  s+=`</svg>`;return s;
+}
+
+// ---- Patterns ----
+// Fingerstyle: 8 plucks per bar. Each cell = a symbol + the string it targets.
+// p uses the current chord's bass string; i/m/a always hit strings 3/2/1.
+function fingerCells(bassStr){
+  const p=bassStr;
+  return [
+    {sym:"p",str:p,lbl:"bass"},{sym:"i",str:3,lbl:"3rd"},{sym:"m",str:2,lbl:"2nd"},{sym:"a",str:1,lbl:"1st"},
+    {sym:"p",str:p,lbl:"bass"},{sym:"i",str:3,lbl:"3rd"},{sym:"m",str:2,lbl:"2nd"},{sym:"a",str:1,lbl:"1st"},
+  ];
+}
+// Strumming: 8 eighth-note slots. null = a rest (no strum on that "&"/beat).
+// Classic pop pattern: D . D U . U D U   (over "1 & 2 & 3 & 4 &")
+const STRUM=[
+  {sym:"↓",lbl:"1"},null,{sym:"↓",lbl:"2"},{sym:"↑",lbl:"&"},
+  null,{sym:"↑",lbl:"&"},{sym:"↓",lbl:"4"},{sym:"↑",lbl:"&"},
+];
+
+// ---- State ----
+let mode="finger", audioCtx=null, timer=null;
+let slot=0;            // 0..7 within the current bar (eighth notes)
+let bar=0;             // 0..3 index into LOOP
+let counting=false, countSlot=0; // count-in state
+
+const modepick=document.getElementById("modepick");
+const nowName=document.getElementById("nowName"), nowRole=document.getElementById("nowRole");
+const dcard=document.getElementById("dcard"), lane=document.getElementById("lane"), laneNote=document.getElementById("laneNote");
+const tempo=document.getElementById("tempo"), bpm=document.getElementById("bpm");
+const startBtn=document.getElementById("startBtn"), stopBtn=document.getElementById("stopBtn");
+const countIn=document.getElementById("countIn");
+tempo.addEventListener("input",()=>{bpm.textContent=tempo.value; if(timer){clearInterval(timer);timer=setInterval(tick,interval());}});
+
+// Build the 8 lane cells once; we re-fill their contents each bar/mode.
+const cells=[];
+for(let i=0;i<8;i++){const d=document.createElement("div");d.className="cell";lane.appendChild(d);cells.push(d);}
+
+function renderBar(){
+  const L=LOOP[bar];
+  nowName.textContent=L.name;
+  nowRole.textContent="bar "+(bar+1)+" of 4";
+  dcard.innerHTML=chordSVG(L.name);
+  const pat = mode==="finger" ? fingerCells(L.bass) : STRUM;
+  cells.forEach((cell,i)=>{
+    const step=pat[i];
+    if(step){cell.style.visibility="visible";cell.innerHTML=`<div class="sym">${step.sym}</div><div class="lbl">${step.lbl||""}</div>`;}
+    else{cell.style.visibility="visible";cell.innerHTML=`<div class="sym" style="color:#cdc4b4">·</div><div class="lbl">&nbsp;</div>`;}
+    cell.classList.remove("active");
+  });
+  laneNote.textContent = mode==="finger"
+    ? "thumb (p) on the "+L.bassLbl+", then i·m·a on strings 3·2·1"
+    : "↓ down · ↑ up — pattern: D · D U · U D U";
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll("#modepick button").forEach(b=>b.classList.toggle("sel",b.dataset.m===m));
+  renderBar();
+}
+modepick.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ if(!timer) {bar=0;} setMode(b.dataset.m); }));
+
+// ---- Sound: a short click. Strong click on beat 1, softer on other 8ths. ----
+function click(strong){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.frequency.value=strong?1100:720;
+  g.gain.setValueAtTime(strong?0.5:0.24,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.08);
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.09);
+}
+
+// Interval = one EIGHTH note. BPM counts quarter notes, so eighth = 30000/BPM ms.
+function interval(){return 30000/parseInt(tempo.value,10);}
+
+function tick(){
+  // Count-in: one bar (4 quarter clicks) before the loop starts.
+  if(counting){
+    // only click on the 4 down-beats (even eighth slots)
+    if(countSlot%2===0){ click(countSlot===0); nowRole.textContent="count-in "+(countSlot/2+1); }
+    countSlot++;
+    if(countSlot>=8){ counting=false; slot=0; bar=0; renderBar(); }
+    return;
+  }
+  // clear previous highlight
+  cells.forEach(c=>c.classList.remove("active"));
+  cells[slot].classList.add("active");
+  // sound: strong on slot 0 (beat 1), softer elsewhere — but stay silent on strum rests
+  const pat = mode==="finger" ? fingerCells(LOOP[bar].bass) : STRUM;
+  if(mode==="finger" || pat[slot]) click(slot===0);
+  // advance
+  slot++;
+  if(slot>=8){
+    slot=0;
+    bar=(bar+1)%4;
+    renderBar();
+  }
+}
+
+function start(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(timer)return;
+  bar=0; slot=0;
+  if(countIn.checked){ counting=true; countSlot=0; } else { counting=false; renderBar(); }
+  tick();
+  timer=setInterval(tick,interval());
+  startBtn.disabled=true; stopBtn.disabled=false;
+}
+function stop(){
+  clearInterval(timer); timer=null; counting=false;
+  cells.forEach(c=>c.classList.remove("active"));
+  bar=0; slot=0; renderBar();
+  startBtn.disabled=false; stopBtn.disabled=true;
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+
+// init
+renderBar();
+</script>
+</body>
+</html>

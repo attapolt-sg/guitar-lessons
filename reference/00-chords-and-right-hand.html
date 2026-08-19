@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reference · Chords & Right-Hand — Guitar</title>
+<style>
+  :root {
+    --ink: #1c1a17;
+    --muted: #6b6459;
+    --line: #ddd5c7;
+    --accent: #a8541f;
+    --paper: #fbf8f2;
+    --panel: #fff;
+    --dot: #1c1a17;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    color: var(--ink);
+    background: var(--paper);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 28px 80px; }
+  header { border-bottom: 3px double var(--line); padding-bottom: 18px; margin-bottom: 8px; }
+  .kicker { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: 34px; margin: 6px 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 22px; margin: 40px 0 12px; border-left: 4px solid var(--accent); padding-left: 12px; }
+  p, li { font-size: 17px; }
+  .sub { color: var(--muted); font-size: 15px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 22px; margin: 20px 0; }
+  .chord { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 12px; width: 150px; box-shadow: 0 1px 0 rgba(0,0,0,0.03); }
+  .chord h3 { margin: 0 0 8px; font-size: 20px; text-align: center; }
+  svg { display: block; margin: 0 auto; }
+  .legend { font-size: 13px; color: var(--muted); text-align: center; margin-top: 6px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; background: var(--panel); }
+  th, td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; font-size: 16px; }
+  th { background: #f1ebe0; }
+  .pima b { color: var(--accent); }
+  .tip { background: #f6efe2; border: 1px solid var(--line); border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 6px; margin: 16px 0; }
+  code { background: #efe8db; padding: 1px 6px; border-radius: 4px; font-family: "SF Mono", Menlo, monospace; font-size: 14px; }
+  a { color: var(--accent); }
+  footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; font-size: 14px; color: var(--muted); }
+  @media print { body { background: #fff; } .chord, table { box-shadow: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Reference · Keep this open</div>
+  <h1>Chords &amp; the Right Hand</h1>
+  <p class="sub">Your reusable cheat sheet. Every lesson points back here.</p>
+</header>
+
+<h2>The four chords you know</h2>
+<p class="sub">Numbers = which finger presses (1 index · 2 middle · 3 ring · 4 pinky).
+&nbsp;○ = open string (play it) &nbsp;✕ = don't play that string.</p>
+<div class="grid" id="chords"></div>
+
+<h2>The right hand: p&nbsp;·&nbsp;i&nbsp;·&nbsp;m&nbsp;·&nbsp;a</h2>
+<p>Fingerstyle names each plucking finger with one letter, from the Spanish words.
+This notation is universal — you'll see it in every fingerstyle book.</p>
+<table class="pima">
+  <tr><th>Letter</th><th>Spanish</th><th>Finger</th><th>Usual job</th></tr>
+  <tr><td><b>p</b></td><td>pulgar</td><td>Thumb</td><td>Bass strings — 6th, 5th, 4th (the thick ones)</td></tr>
+  <tr><td><b>i</b></td><td>índice</td><td>Index</td><td>3rd string (G)</td></tr>
+  <tr><td><b>m</b></td><td>medio</td><td>Middle</td><td>2nd string (B)</td></tr>
+  <tr><td><b>a</b></td><td>anular</td><td>Ring</td><td>1st string (high E, thinnest)</td></tr>
+</table>
+<p class="sub">Source: <a href="https://en.wikipedia.org/wiki/Fingerstyle_guitar">Wikipedia — Fingerstyle guitar</a>.
+The thumb covers the low strings; index/middle/ring cover the top three treble strings.</p>
+
+<div class="tip">
+  <b>String numbering (easy to forget):</b> String <b>1</b> is the <i>thinnest</i>
+  (high E) at the floor; string <b>6</b> is the <i>thickest</i> (low E) at the ceiling.
+  Higher number = thicker = lower pitch.
+</div>
+
+<h2>Resting-hand shape</h2>
+<ul>
+  <li>Thumb (<b>p</b>) sits <b>ahead of</b> the fingers, pointing slightly left, so it doesn't collide with i/m/a.</li>
+  <li>Let the fingers hang relaxed over strings 3-2-1. Pluck by drawing the fingertip <i>toward your palm</i>, not yanking upward.</li>
+  <li>Keep the wrist gently arched, not flat on the soundboard.</li>
+</ul>
+
+<footer>
+  Reference 00 · Guitar workspace · Verified sources 2026-08-17 ·
+  Ask your teacher (this chat) anytime a symbol here is unclear.
+</footer>
+</div>
+
+<script>
+// Draws a simple, clean chord box. Data lists frets per string, low-E (6) → high-E (1).
+// fret 0 = open (○), -1 = muted (✕), positive = fret pressed with the given finger.
+const chords = [
+  { name: "C",  frets: [-1,3,2,0,1,0], fingers: [0,3,2,0,1,0] },
+  { name: "G",  frets: [3,2,0,0,0,3],  fingers: [2,1,0,0,0,3] },
+  { name: "D",  frets: [-1,-1,0,2,3,2],fingers: [0,0,0,1,3,2] },
+  { name: "Em", frets: [0,2,2,0,0,0],  fingers: [0,2,3,0,0,0] },
+];
+
+function chordSVG(c) {
+  const W=120, H=140, padX=18, padTop=26, rows=4, cols=6;
+  const gridW=W-padX*2, gridH=90;
+  const colGap=gridW/(cols-1), rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  // nut (thick top line)
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="3" fill="#1c1a17"/>`;
+  // horizontal fret lines
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0" stroke-width="1"/>`;}
+  // vertical strings
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0" stroke-width="1"/>`;}
+  // markers above nut (open/muted) + finger dots
+  c.frets.forEach((f,i)=>{
+    const col=i; // i=0 is low E (string6) on the left
+    const x=padX+col*colGap;
+    if(f===-1){ s+=`<text x="${x}" y="${padTop-8}" text-anchor="middle" font-size="13" fill="#6b6459">✕</text>`; }
+    else if(f===0){ s+=`<circle cx="${x}" cy="${padTop-12}" r="5" fill="none" stroke="#1c1a17" stroke-width="1.5"/>`; }
+    else {
+      const y=padTop+(f-0.5)*rowGap;
+      s+=`<circle cx="${x}" cy="${y}" r="8" fill="#1c1a17"/>`;
+      const fg=c.fingers[i];
+      if(fg>0) s+=`<text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" fill="#fff" font-family="sans-serif">${fg}</text>`;
+    }
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+const host=document.getElementById("chords");
+chords.forEach(c=>{
+  const div=document.createElement("div");
+  div.className="chord";
+  div.innerHTML=`<h3>${c.name}</h3>${chordSVG(c)}<div class="legend">low E → high E</div>`;
+  host.appendChild(div);
+});
+</script>
+</body>
+</html>

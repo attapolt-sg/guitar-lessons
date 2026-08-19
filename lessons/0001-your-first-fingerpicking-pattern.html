@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 01 · Your First Fingerpicking Pattern</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --glow:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:33px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:24px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  .tab{font-family:"SF Mono",Menlo,monospace;font-size:15px;background:#232019;color:#f3ecdd;padding:16px 18px;border-radius:8px;white-space:pre;overflow-x:auto;line-height:1.55;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+
+  /* Trainer */
+  .trainer{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:22px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .beads{display:flex;gap:14px;justify-content:center;margin:18px 0 8px;}
+  .bead{width:78px;height:78px;border-radius:14px;border:2px solid var(--line);background:#faf6ee;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .06s,box-shadow .12s,background .12s;}
+  .bead .f{font-size:30px;font-weight:700;font-family:sans-serif;color:var(--accent);}
+  .bead .s{font-size:12px;color:var(--muted);margin-top:2px;}
+  .bead.active{background:var(--glow);border-color:var(--accent);transform:translateY(-4px);box-shadow:0 6px 16px rgba(168,84,31,.35);}
+  .bead.active .f{color:#3a2200;}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:14px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:180px;accent-color:var(--accent);}
+  .readout{font-family:sans-serif;font-size:15px;color:var(--muted);text-align:center;margin-top:10px;min-height:22px;}
+  .big{font-size:26px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+
+  /* Quiz */
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:16px 0;}
+  .opt{display:block;width:100%;text-align:left;background:#faf6ee;border:1px solid var(--line);color:var(--ink);padding:10px 14px;border-radius:8px;margin:8px 0;cursor:pointer;font-size:16px;}
+  .opt:hover{border-color:var(--accent);}
+  .opt.right{background:#e5f2e5;border-color:var(--good);}
+  .opt.wrong{background:#f7e3e0;border-color:#b3402f;}
+  .fb{font-size:15px;margin-top:8px;min-height:20px;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+  @media print{.trainer,button{box-shadow:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 01 · toward fingerstyle</div>
+  <h1>Your First Fingerpicking Pattern</h1>
+  <p class="sub">One pattern. Two chords you already know. A steady pulse you can feel.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> play the <code>p–i–m–a</code> pattern smoothly over
+  <b>Em</b> and <b>C</b>, in time, for one full minute. That's a real
+  fingerstyle skill — and it's the exact cure for the rhythm problem you told me about.
+</div>
+
+<h2>Why this fixes your rhythm</h2>
+<p>When you strum freely, nothing forces you to stay on the beat — so your hand
+drifts and you "lose the rhythm." Fingerpicking is different: each finger has
+<b>one job, in a fixed order</b>. That repeating order becomes a little clock
+inside your hand. Master a pattern slowly and steadiness comes for free.</p>
+<p class="sub">New here? Open the
+<a href="../reference/00-chords-and-right-hand.html">Chords &amp; Right-Hand reference</a>
+in another tab — it explains <code>p·i·m·a</code> and string numbers.</p>
+
+<h2>The pattern</h2>
+<p>Four plucks, one per beat. Hold a chord with your left hand and let the right
+hand repeat this without stopping:</p>
+<div class="tab">Beat:   1     2     3     4
+Finger: p     i     m     a
+String: bass  3rd   2nd   1st   (then repeat)</div>
+<ul>
+  <li><b>p</b> (thumb) plays the chord's <i>bass</i> string — for <b>Em</b> the 6th string, for <b>C</b> the 5th string.</li>
+  <li><b>i</b> = 3rd string · <b>m</b> = 2nd string · <b>a</b> = 1st string. These stay the same for every chord.</li>
+</ul>
+
+<h2>The rhythm trainer</h2>
+<p>Press <b>Start</b>. Each beat lights up a finger and clicks. <b>Don't touch the
+guitar yet</b> — first just say the letters out loud with the lights: "p… i… m… a."
+Then pick up the guitar and pluck along. Start slow; only raise the tempo when it feels easy.</p>
+
+<div class="trainer">
+  <div class="beads" id="beads"></div>
+  <div class="controls">
+    <button id="startBtn">▶ Start</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="40" max="100" value="56" step="2">
+      <span class="big" id="bpm">56</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="readout" id="readout">Tip: 56 BPM is a calm walking pace. Loop count: <b id="loops">0</b></div>
+</div>
+
+<div class="tip">
+  <b>Metronome note:</b> the clicks are generated in your browser (Web Audio) —
+  no download needed. If you hear nothing, click <b>Start</b> once more (browsers
+  require a click before playing sound).
+</div>
+
+<h2>Practice steps (about 15 min)</h2>
+<div class="step"><span class="n">1</span><b>Air-pick (2 min).</b> Trainer on at 56 BPM. No guitar. Say "p-i-m-a" with the lights until it's automatic.</div>
+<div class="step"><span class="n">2</span><b>Em only (5 min).</b> Hold Em. Thumb hits the 6th string on beat 1, then i-m-a on 3-2-1. Keep looping. Missed notes are fine — <b>never stop the pulse</b>.</div>
+<div class="step"><span class="n">3</span><b>C only (4 min).</b> Same pattern, but thumb now hits the 5th string. Notice C rings clean when your fingers arch so they don't mute neighbours.</div>
+<div class="step"><span class="n">4</span><b>Switch (4 min).</b> Two loops of Em, two loops of C, repeat. The switch is the hard part — that's exactly the chord-transition skill we're building.</div>
+
+<h2>Check yourself</h2>
+<div class="quiz" id="quiz">
+  <p><b>Q. In the pattern <code>p–i–m–a</code>, which finger plays the bass string on beat 1?</b></p>
+  <button class="opt" data-ok="0">a — the ring finger</button>
+  <button class="opt" data-ok="0">i — the index finger</button>
+  <button class="opt" data-ok="1">p — the thumb</button>
+  <div class="fb" id="fb"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <p><b>Q. You fumble the C chord mid-loop. What should you do?</b></p>
+  <button class="opt" data-ok="0">Stop, reset the chord, then start the pulse again</button>
+  <button class="opt" data-ok="1">Keep the pulse going — catch the next loop cleanly</button>
+  <button class="opt" data-ok="0">Slow way down until every note is perfect</button>
+  <div class="fb" id="fb2"></div>
+</div>
+
+<h2>When you can hold it for 1 minute</h2>
+<p>Message me <b>"Lesson 1 done — held it at ___ BPM"</b> and tell me how the C→Em
+switch felt. That tells me your zone of proximal development.</p>
+<p><b>Next:</b> <a href="0002-clean-fingers-every-string-rings.html">Lesson 02 · Clean Fingers — Every String Rings</a>
+— make every note sound clear, even when you dig in.</p>
+
+<div class="tip"><b>Ask your teacher.</b> Anything unclear — a symbol, a finger that won't
+cooperate, buzzing strings — just ask in the chat. That's what I'm here for.</div>
+
+<footer>
+  Lesson 01 · Guitar workspace · Right-hand notation per
+  <a href="https://en.wikipedia.org/wiki/Fingerstyle_guitar">Wikipedia — Fingerstyle guitar</a> ·
+  Structured course home: <a href="https://www.justinguitar.com/guitar-lessons">JustinGuitar</a>.
+</footer>
+</div>
+
+<script>
+// ---- Rhythm trainer: lights + Web Audio click, four beats p-i-m-a ----
+const steps=[
+  {f:"p",s:"bass (6th/5th)"},
+  {f:"i",s:"3rd string"},
+  {f:"m",s:"2nd string"},
+  {f:"a",s:"1st string"},
+];
+const beadHost=document.getElementById("beads");
+steps.forEach((st,idx)=>{
+  const b=document.createElement("div");
+  b.className="bead"; b.id="bead"+idx;
+  b.innerHTML=`<span class="f">${st.f}</span><span class="s">${st.s}</span>`;
+  beadHost.appendChild(b);
+});
+
+let audioCtx=null, timer=null, beat=0, loops=0;
+const tempo=document.getElementById("tempo");
+const bpm=document.getElementById("bpm");
+const loopsEl=document.getElementById("loops");
+const startBtn=document.getElementById("startBtn");
+const stopBtn=document.getElementById("stopBtn");
+
+tempo.addEventListener("input",()=>{ bpm.textContent=tempo.value; });
+
+function click(strong){
+  if(!audioCtx) return;
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.frequency.value=strong?1100:760;   // beat 1 is higher/stronger
+  g.gain.setValueAtTime(strong?0.5:0.28,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.09);
+  o.connect(g).connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime+0.1);
+}
+
+function tick(){
+  document.querySelectorAll(".bead").forEach(b=>b.classList.remove("active"));
+  document.getElementById("bead"+beat).classList.add("active");
+  click(beat===0);
+  if(beat===0 && loops>=0){ /* on the downbeat */ }
+  beat=(beat+1)%4;
+  if(beat===0){ loops++; loopsEl.textContent=loops; }
+}
+
+function interval(){ return 60000/parseInt(tempo.value,10); }
+
+function start(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended") audioCtx.resume();
+  if(timer) return;
+  beat=0; loops=0; loopsEl.textContent=0;
+  tick();
+  timer=setInterval(tick, interval());
+  startBtn.disabled=true; stopBtn.disabled=false;
+  // re-apply tempo changes live
+  tempo.oninput=()=>{ bpm.textContent=tempo.value; clearInterval(timer); timer=setInterval(tick,interval()); };
+}
+function stop(){
+  clearInterval(timer); timer=null;
+  document.querySelectorAll(".bead").forEach(b=>b.classList.remove("active"));
+  startBtn.disabled=false; stopBtn.disabled=true;
+  tempo.oninput=()=>{ bpm.textContent=tempo.value; };
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+
+// ---- Quizzes ----
+function wire(quizId,fbId,okMsg){
+  const q=document.getElementById(quizId), fb=document.getElementById(fbId);
+  q.querySelectorAll(".opt").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const ok=btn.dataset.ok==="1";
+      btn.classList.add(ok?"right":"wrong");
+      fb.style.color=ok?"#2e7d32":"#b3402f";
+      fb.innerHTML=ok?("✓ "+okMsg):"Not quite — try again.";
+      if(ok) q.querySelectorAll(".opt").forEach(b=>b.disabled=true);
+    });
+  });
+}
+wire("quiz","fb","The thumb (p) anchors the beat on the bass string. That low note is your metronome.");
+wire("quiz2","fb2","Yes! Protecting the pulse matters more than any single note. Steadiness first, accuracy follows.");
+</script>
+</body>
+</html>

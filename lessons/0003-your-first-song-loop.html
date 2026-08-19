@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 03 · Your First Song Loop — G · D · Em · C</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:32px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+
+  /* Player */
+  .player{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .now{display:flex;align-items:center;gap:22px;justify-content:center;flex-wrap:wrap;}
+  .nowchord{text-align:center;}
+  .nowchord .name{font-size:64px;font-weight:800;font-family:sans-serif;color:var(--accent);line-height:1;}
+  .nowchord .bass{font-size:14px;color:var(--muted);margin-top:4px;}
+  .nextup{font-size:15px;color:var(--muted);font-family:sans-serif;text-align:center;}
+  .nextup .big{font-size:30px;color:var(--ink);font-weight:700;display:block;}
+  .prep{color:var(--bad);font-weight:700;font-family:sans-serif;text-align:center;min-height:22px;margin-top:8px;}
+  .beats{display:flex;gap:10px;justify-content:center;margin:16px 0 4px;}
+  .bd{width:46px;height:46px;border-radius:10px;border:2px solid var(--line);background:#faf6ee;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:20px;font-weight:700;color:var(--accent);transition:transform .06s,background .12s,box-shadow .12s;}
+  .bd.active{background:var(--glow);border-color:var(--accent);transform:translateY(-3px);box-shadow:0 5px 12px rgba(168,84,31,.35);}
+  .bd.active{color:#3a2200;}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:16px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:160px;accent-color:var(--accent);}
+  .big{font-size:24px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+  label.opt{font-size:14px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;}
+
+  .prog{display:flex;gap:10px;justify-content:center;margin:10px 0 0;flex-wrap:wrap;}
+  .pill{padding:6px 16px;border-radius:20px;border:1px solid var(--line);font-family:sans-serif;font-weight:700;color:var(--muted);}
+  .pill.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 03 · toward fingerstyle</div>
+  <h1>Your First Song Loop</h1>
+  <p class="sub">Four chords, one pattern, endless songs. This is where it starts sounding like music.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> fingerpick the p-i-m-a pattern through
+  <b>G → D → Em → C</b>, one chord per bar, looping smoothly without stopping.
+  Every note clean (Lesson 02), pulse steady (Lesson 01) — now joined together.
+</div>
+
+<h2>Why these four chords</h2>
+<p>G, D, Em, and C — in this family — are the backbone of an enormous number of
+Thai <i>and</i> English pop songs. Learn this one loop and you're a capo away from
+playing along with hundreds of tracks. It's the most famous progression in
+popular music for a reason.</p>
+<p class="sub">Need the shapes? Keep the
+<a href="../reference/00-chords-and-right-hand.html">Chords &amp; Right-Hand reference</a> open.</p>
+
+<h2>The loop</h2>
+<p>One chord per bar. Four plucks per bar (your p-i-m-a from
+<a href="0001-your-first-fingerpicking-pattern.html">Lesson 01</a>). The thumb
+plays each chord's bass string:</p>
+<ul>
+  <li><b>G</b> — thumb on 6th string · <b>D</b> — thumb on 4th string</li>
+  <li><b>Em</b> — thumb on 6th string · <b>C</b> — thumb on 5th string</li>
+</ul>
+
+<h2>The song-loop player</h2>
+<p>Press <b>Start</b>. It counts four beats per chord, lights each pluck, and — on
+beat 4 — flashes a red <b>"switch next!"</b> warning so your hand gets ready
+<i>before</i> the change. That early prep is the secret to not losing the pulse.</p>
+
+<div class="player">
+  <div class="prog" id="prog"></div>
+  <div class="now" style="margin-top:16px;">
+    <div class="nowchord">
+      <div class="name" id="nowName">G</div>
+      <div class="bass" id="nowBass">thumb: 6th string</div>
+    </div>
+    <div class="nextup">next<span class="big" id="nextName">D</span></div>
+  </div>
+  <div class="prep" id="prep">&nbsp;</div>
+  <div class="beats" id="beats"></div>
+  <div class="controls">
+    <button id="startBtn">▶ Start</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="40" max="90" value="50" step="2">
+      <span class="big" id="bpm">50</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="controls" style="margin-top:6px;">
+    <label class="opt"><input type="checkbox" id="oneChord"> Park on one chord (no switching yet)</label>
+  </div>
+</div>
+
+<div class="tip"><b>Start at 50 BPM</b> — slower than Lesson 01 on purpose, because
+switching is hard. Tick "park on one chord" first if you want to warm up the
+picking before adding changes.</div>
+
+<h2>Practice routine (about 20 min)</h2>
+<div class="step"><span class="n">1</span><b>Name the bass notes (2 min).</b> No playing. Watch the player loop and say each chord's thumb string: "G-six, D-four, Em-six, C-five."</div>
+<div class="step"><span class="n">2</span><b>Two-chord chunks (8 min).</b> Practise just <b>G→D</b> until smooth, then <b>Em→C</b>. Small chunks beat the whole loop.</div>
+<div class="step"><span class="n">3</span><b>Anchor trick (5 min).</b> Between Em and C, your finger 2 barely moves — keep it near the strings as a guide. Look for a common finger between each pair; leave it hovering.</div>
+<div class="step"><span class="n">4</span><b>Full loop (5 min).</b> All four, looping. If you stumble, <b>keep the pulse</b> and rejoin next bar — never stop the beat.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me <b>which switch was hardest</b> (e.g. "D→Em") and the tempo you
+looped cleanly.</p>
+<p><b>Next:</b> <a href="0004-smooth-switches-anchors-and-guides.html">Lesson 04 · Smooth Switches — Anchors &amp; Guide Fingers</a>
+— the trick that makes every chord change effortless.</p>
+
+<div class="tip"><b>Ask your teacher.</b> Stuck on a switch? Describe what your
+fingers do (or send a photo) and I'll give you a targeted fix.</div>
+
+<footer>
+  Lesson 03 · Guitar workspace · Builds on
+  <a href="0001-your-first-fingerpicking-pattern.html">Lesson 01</a> &amp;
+  <a href="0002-clean-fingers-every-string-rings.html">Lesson 02</a> ·
+  Course home: <a href="https://www.justinguitar.com/guitar-lessons">JustinGuitar</a>.
+</footer>
+</div>
+
+<script>
+// Progression: chord + which string the thumb plays (for the bass label).
+const PROG=[
+  {name:"G",  bass:"6th string"},
+  {name:"D",  bass:"4th string"},
+  {name:"Em", bass:"6th string"},
+  {name:"C",  bass:"5th string"},
+];
+
+// build progression pills
+const progHost=document.getElementById("prog");
+PROG.forEach((c,i)=>{
+  const p=document.createElement("div");
+  p.className="pill"; p.id="pill"+i; p.textContent=c.name;
+  progHost.appendChild(p);
+});
+// build beat boxes 1..4
+const beatsHost=document.getElementById("beats");
+for(let b=1;b<=4;b++){
+  const d=document.createElement("div");
+  d.className="bd"; d.id="bd"+b; d.textContent=b;
+  beatsHost.appendChild(d);
+}
+
+let audioCtx=null,timer=null,beat=0,chordIdx=0;
+const tempo=document.getElementById("tempo"),bpm=document.getElementById("bpm");
+const startBtn=document.getElementById("startBtn"),stopBtn=document.getElementById("stopBtn");
+const oneChord=document.getElementById("oneChord");
+const nowName=document.getElementById("nowName"),nowBass=document.getElementById("nowBass");
+const nextName=document.getElementById("nextName"),prep=document.getElementById("prep");
+
+tempo.addEventListener("input",()=>bpm.textContent=tempo.value);
+
+function click(strong){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.frequency.value=strong?1100:760;
+  g.gain.setValueAtTime(strong?0.5:0.28,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.09);
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.1);
+}
+
+function paint(){
+  const cur=PROG[chordIdx];
+  nowName.textContent=cur.name;
+  nowBass.textContent="thumb: "+cur.bass;
+  const nxt=oneChord.checked?cur:PROG[(chordIdx+1)%PROG.length];
+  nextName.textContent=nxt.name;
+  PROG.forEach((c,i)=>document.getElementById("pill"+i).classList.toggle("on",i===chordIdx));
+}
+
+function tick(){
+  // light current beat (beat is 0..3 → boxes 1..4)
+  for(let b=1;b<=4;b++)document.getElementById("bd"+b).classList.remove("active");
+  document.getElementById("bd"+(beat+1)).classList.add("active");
+  click(beat===0);
+  // on beat 4 (index 3), warn to switch
+  if(beat===3 && !oneChord.checked){
+    const nxt=PROG[(chordIdx+1)%PROG.length];
+    prep.textContent="↻ get ready — switch to "+nxt.name+" !";
+  }else{
+    prep.innerHTML="&nbsp;";
+  }
+  beat++;
+  if(beat>3){
+    beat=0;
+    if(!oneChord.checked) chordIdx=(chordIdx+1)%PROG.length;
+    paint();
+  }
+}
+
+function interval(){return 60000/parseInt(tempo.value,10);}
+function start(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(timer)return;
+  beat=0;chordIdx=0;paint();tick();
+  timer=setInterval(tick,interval());
+  startBtn.disabled=true;stopBtn.disabled=false;
+  tempo.oninput=()=>{bpm.textContent=tempo.value;clearInterval(timer);timer=setInterval(tick,interval());};
+}
+function stop(){
+  clearInterval(timer);timer=null;
+  for(let b=1;b<=4;b++)document.getElementById("bd"+b).classList.remove("active");
+  prep.innerHTML="&nbsp;";
+  startBtn.disabled=false;stopBtn.disabled=true;
+  tempo.oninput=()=>bpm.textContent=tempo.value;
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+oneChord.addEventListener("change",paint);
+paint();
+</script>
+</body>
+</html>
