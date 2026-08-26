@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 06 · Lock the Strum — Constant Motion</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:31px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+  .concept{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+
+  /* chord loop strip */
+  .loop{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0;}
+  .loop .c{font-family:sans-serif;font-weight:800;font-size:20px;color:var(--accent);border:2px solid var(--line);border-radius:10px;padding:8px 18px;background:#fdfbf6;}
+  .loop .sep{align-self:center;color:var(--muted);font-size:22px;}
+
+  /* player */
+  .player{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .modepick{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
+  .modepick button{font-family:inherit;font-size:14px;background:#fff;color:var(--accent);border:1px solid var(--accent);padding:7px 14px;border-radius:8px;cursor:pointer;}
+  .modepick button.sel{background:var(--accent);color:#fff;}
+  .now{text-align:center;margin:8px 0 4px;}
+  .now .name{font-size:56px;font-weight:800;font-family:sans-serif;color:var(--accent);line-height:1;}
+  .now .role{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+
+  /* chord diagram */
+  .dwrap{display:flex;justify-content:center;margin:6px 0 2px;}
+  .dcard{border:2px solid var(--accent);border-radius:12px;padding:8px 12px 4px;background:#fdfbf6;box-shadow:0 6px 16px rgba(168,84,31,.18);}
+
+  /* strum lane */
+  .lane{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .cell{width:46px;height:58px;border-radius:10px;border:2px solid var(--line);background:#faf6ee;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;transition:transform .06s,background .12s;}
+  .cell.active{background:var(--glow);border-color:var(--accent);transform:translateY(-3px);}
+  .cell .sym{font-size:24px;font-weight:800;color:var(--accent);}
+  .cell .ghost{font-size:24px;font-weight:800;color:#d8cdba;}   /* hand moving but no hit */
+  .cell .lbl{font-size:11px;color:var(--muted);}
+  .laneNote{text-align:center;font-size:14px;color:var(--muted);min-height:20px;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:14px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:150px;accent-color:var(--accent);}
+  .big{font-size:24px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+  .toggle{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 06 · rhythm that never wobbles</div>
+  <h1>Lock the Strum — Constant Motion</h1>
+  <p class="sub">You said the strum felt steadier than the fingerpick. Good — so let's make it <i>rock solid</i> before we go back to picking.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> hold one strum pattern around the <b>Em → C → G → D</b> loop for a full minute
+  <b>without losing the beat</b> — using one rule that fixes wobbly rhythm for good.
+</div>
+
+<h2>The one rule: the hand never stops</h2>
+<p>Here's the mistake almost everyone makes: they move the strumming hand <i>only when they want a
+strum</i>. Start-stop, start-stop — and the timing drifts, because there's nothing keeping the pulse.</p>
+
+<div class="concept">
+  <b>Constant motion.</b> Your strumming hand keeps swinging up and down <i>the whole time</i>, like a
+  pendulum — <b>down on every beat</b> (1&nbsp;2&nbsp;3&nbsp;4), <b>up on every "&"</b> in between.
+  The swing <i>never stops</i>. To play a pattern, you simply let the hand <b>brush the strings on some
+  swings and miss them on others</b> — but the arm keeps moving either way. That non-stop swing <i>is</i>
+  your metronome.
+</div>
+
+<p>So a "rest" in a pattern is not the hand stopping — it's the hand <b>swinging past the strings without
+touching them</b>. Keep that in your head and your timing stops drifting almost immediately.</p>
+
+<h2>Drill 0 — the mute strum (do this first)</h2>
+<p>Before you worry about chords, isolate the <b>rhythm alone</b>:</p>
+<div class="tip">
+  <b>How:</b> lay your fretting hand <i>lightly</i> across all the strings (touching, not pressing) so
+  they don't ring — you'll get a percussive <b>"chk"</b> instead of notes. Now strum the patterns below.
+  With no notes to judge, all you can hear is <i>time</i> — that's the point. Keep the hand swinging.
+</div>
+
+<h2>The player — constant-motion trainer</h2>
+<p>Pick a pattern. The player sweeps a cursor across <b>all eight swings</b> of the bar: a solid arrow
+means <b>let it hit</b>, a faded arrow means <b>swing past, no hit</b>. The metronome clicks every beat
+underneath — that click never changes, so lock to it. Start at <b>60 BPM</b>.</p>
+
+<div class="player">
+  <div class="modepick" id="modepick">
+    <button data-m="downs" class="sel">Down-beats only</button>
+    <button data-m="eighths">All down-up</button>
+    <button data-m="pop">Pop: D · D U · U D U</button>
+  </div>
+
+  <div class="now">
+    <div class="name" id="nowName">Em</div>
+    <div class="role" id="nowRole">bar 1 of 4</div>
+  </div>
+  <div class="dwrap"><div class="dcard" id="dcard"></div></div>
+
+  <div class="lane" id="lane"></div>
+  <div class="laneNote" id="laneNote"></div>
+
+  <div class="controls">
+    <button id="startBtn">▶ Start loop</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="44" max="104" value="60" step="2">
+      <span class="big" id="bpm">60</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="controls">
+    <label class="toggle"><input type="checkbox" id="countIn" checked> 1-bar count-in before the loop</label>
+    <label class="toggle"><input type="checkbox" id="chords" checked> show chord diagrams (uncheck for pure mute-strum practice)</label>
+  </div>
+</div>
+
+<h2>The three patterns, easiest to hardest</h2>
+<div class="tip">
+  <b>1 · Down-beats only</b> — <code>↓ · ↓ · ↓ · ↓ ·</code><br>
+  One down-strum on each beat. Hand still swings up in between, but misses the strings. The
+  foundation — get this locked first.
+</div>
+<div class="tip">
+  <b>2 · All down-up</b> — <code>↓ ↑ ↓ ↑ ↓ ↑ ↓ ↑</code><br>
+  Every swing hits: down on the beats, up on the "&"s. Fills the bar with even eighth-notes.
+  Keep down and up equally loud.
+</div>
+<div class="tip">
+  <b>3 · Pop pattern</b> — <code>↓ · ↓ ↑ · ↑ ↓ ↑</code> ("down, down-up, up-down-up")<br>
+  The classic. The two misses (after beat 1, and on beat 3) are where the drifting usually starts —
+  so keep the arm swinging through them and trust the constant motion.
+</div>
+
+<h2>Practice routine (about 20 min)</h2>
+<div class="step"><span class="n">1</span><b>Mute-strum the pulse (4 min).</b> Uncheck "show chord diagrams." Mute the strings with your fretting hand. Play <b>Down-beats only</b> at 60 BPM. Just "chk … chk … chk … chk," dead in time with the click.</div>
+<div class="step"><span class="n">2</span><b>Mute-strum, all down-up (4 min).</b> Same mute, switch to <b>All down-up</b>. Down and up equally strong. Feel the hand pendulum never stop.</div>
+<div class="step"><span class="n">3</span><b>Add the chords, down-beats only (4 min).</b> Re-check chords. Play the Em→C→G→D loop with just down-strums on each beat. Land every chord change on beat 1.</div>
+<div class="step"><span class="n">4</span><b>The pop pattern (5 min).</b> Switch to <b>Pop</b>. Slow the tempo if the misses trip you. Keep the arm swinging <i>through</i> the gaps.</div>
+<div class="step"><span class="n">5</span><b>The one-minute test (3 min).</b> Pick your best pattern and hold it around the full loop for 60 seconds straight without the beat wobbling. That's the win.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me: <b>(1)</b> the fastest BPM where you held a pattern clean for a full minute,
+<b>(2)</b> which pattern you got to (down-beats / all down-up / pop), and <b>(3)</b> did the
+"hand never stops" rule actually make the timing feel steadier? If yes, Lesson 07 puts the
+<i>thumb</i> back on that same steady pulse — and we're finally doing real fingerstyle in time. 🎶</p>
+
+<footer>
+  Lesson 06 · Guitar workspace · Builds on
+  <a href="0005-zombie-fingerstyle-and-strumming.html">Lesson 05</a> ·
+  Chords: <a href="../reference/00-chords-and-right-hand.html">reference sheet</a>
+</footer>
+</div>
+
+<script>
+// ---- Chord shapes: strings low-E(6) -> high-E(1). fret 0=open, -1=muted; fingers 1-4. ----
+const CHORDS={
+  Em:{frets:[0,2,2,0,0,0], fingers:[0,2,3,0,0,0]},
+  C: {frets:[-1,3,2,0,1,0],fingers:[0,3,2,0,1,0]},
+  G: {frets:[3,2,0,0,0,3], fingers:[2,1,0,0,0,3]},
+  D: {frets:[-1,-1,0,2,3,2],fingers:[0,0,0,1,3,2]},
+};
+// The chord loop — one bar each, then repeat.
+const LOOP=["Em","C","G","D"];
+
+// ---- Draw a chord diagram (same style as the other lessons) ----
+function chordSVG(name){
+  const c=CHORDS[name];
+  const W=104,H=124,padX=16,padTop=26,rows=4,cols=6;
+  const gridW=W-padX*2,gridH=76,colGap=gridW/(cols-1),rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="2.6" fill="#1c1a17"/>`;
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0"/>`;}
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0"/>`;}
+  c.frets.forEach((f,i)=>{
+    const x=padX+i*colGap;
+    if(f===-1){s+=`<text x="${x}" y="${padTop-8}" text-anchor="middle" font-size="12" fill="#6b6459">✕</text>`;}
+    else if(f===0){s+=`<circle cx="${x}" cy="${padTop-11}" r="4.5" fill="none" stroke="#1c1a17" stroke-width="1.4"/>`;}
+    else{
+      const y=padTop+(f-0.5)*rowGap, fg=c.fingers[i];
+      s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="#1c1a17"/>`;
+      if(fg>0)s+=`<text x="${x}" y="${y+3.6}" text-anchor="middle" font-size="10.5" fill="#fff" font-family="sans-serif">${fg}</text>`;
+    }
+  });
+  s+=`</svg>`;return s;
+}
+
+// ---- Strum patterns ----
+// 8 eighth-note slots per bar. Even slots (0,2,4,6) = a DOWN swing (beats 1-4).
+// Odd slots (1,3,5,7) = an UP swing (the "&"s). At each slot the hand is ALWAYS
+// swinging in that direction; `hit:true` means it brushes the strings, false = swings past.
+function patternFor(mode){
+  const dir = i => (i%2===0 ? "↓" : "↑");           // hand direction at this swing
+  const lbl = i => (i%2===0 ? String(i/2+1) : "&"); // 1 & 2 & 3 & 4 &
+  let hits;
+  if(mode==="downs")        hits=[1,0,1,0,1,0,1,0]; // ↓ only, on each beat
+  else if(mode==="eighths") hits=[1,1,1,1,1,1,1,1]; // every swing hits
+  else /* pop */            hits=[1,0,1,1,0,1,1,1]; // ↓ · ↓ ↑ · ↑ ↓ ↑
+  return hits.map((h,i)=>({sym:dir(i),lbl:lbl(i),hit:!!h}));
+}
+const PATNOTE={
+  downs:"↓ on every beat · hand still swings up in between (faded = no hit)",
+  eighths:"↓ on beats, ↑ on the &s · every swing hits — keep them equally loud",
+  pop:"↓ · ↓ ↑ · ↑ ↓ ↑ — swing through the two gaps, don't stop the hand",
+};
+
+// ---- State ----
+let mode="downs", audioCtx=null, timer=null;
+let slot=0;            // 0..7 within the current bar (eighth notes)
+let bar=0;             // 0..3 index into LOOP
+let counting=false, countSlot=0; // count-in state
+
+const modepick=document.getElementById("modepick");
+const nowName=document.getElementById("nowName"), nowRole=document.getElementById("nowRole");
+const dcard=document.getElementById("dcard"), lane=document.getElementById("lane"), laneNote=document.getElementById("laneNote");
+const tempo=document.getElementById("tempo"), bpm=document.getElementById("bpm");
+const startBtn=document.getElementById("startBtn"), stopBtn=document.getElementById("stopBtn");
+const countIn=document.getElementById("countIn"), chords=document.getElementById("chords");
+tempo.addEventListener("input",()=>{bpm.textContent=tempo.value; if(timer){clearInterval(timer);timer=setInterval(tick,interval());}});
+chords.addEventListener("change",renderBar);
+
+// Build the 8 lane cells once; we re-fill their contents each bar/mode.
+const cells=[];
+for(let i=0;i<8;i++){const d=document.createElement("div");d.className="cell";lane.appendChild(d);cells.push(d);}
+
+function renderBar(){
+  const name=LOOP[bar];
+  nowName.textContent = chords.checked ? name : "—";
+  nowRole.textContent = "bar "+(bar+1)+" of 4";
+  dcard.parentElement.style.display = chords.checked ? "flex" : "none";
+  if(chords.checked) dcard.innerHTML=chordSVG(name);
+  const pat = patternFor(mode);
+  cells.forEach((cell,i)=>{
+    const step=pat[i];
+    // solid arrow if this swing hits; faded (ghost) arrow if the hand just swings past
+    const cls = step.hit ? "sym" : "ghost";
+    cell.innerHTML=`<div class="${cls}">${step.sym}</div><div class="lbl">${step.lbl}</div>`;
+    cell.classList.remove("active");
+  });
+  laneNote.textContent = PATNOTE[mode];
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll("#modepick button").forEach(b=>b.classList.toggle("sel",b.dataset.m===m));
+  renderBar();
+}
+modepick.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ if(!timer){bar=0;} setMode(b.dataset.m); }));
+
+// ---- Sounds ----
+// Metronome click: strong on beat 1, softer on the other beats. Clicks EVERY beat, any pattern.
+function metroClick(strong){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.frequency.value=strong?1100:760;
+  g.gain.setValueAtTime(strong?0.5:0.24,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.06);
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.07);
+}
+// Strum tick: a short filtered noise burst so a "hit" sounds different from the metronome.
+function strumTick(up){
+  if(!audioCtx)return;
+  const dur=0.09, sr=audioCtx.sampleRate, buf=audioCtx.createBuffer(1,sr*dur,sr), d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2); } // decaying noise
+  const src=audioCtx.createBufferSource(); src.buffer=buf;
+  const f=audioCtx.createBiquadFilter(); f.type="bandpass"; f.frequency.value=up?2600:1500; f.Q.value=0.7;
+  const g=audioCtx.createGain(); g.gain.value=0.35;
+  src.connect(f).connect(g).connect(audioCtx.destination);
+  src.start();
+}
+
+// Interval = one EIGHTH note. BPM counts quarter notes, so eighth = 30000/BPM ms.
+function interval(){return 30000/parseInt(tempo.value,10);}
+
+function tick(){
+  // Count-in: one bar (4 quarter clicks) before the loop starts.
+  if(counting){
+    if(countSlot%2===0){ metroClick(countSlot===0); nowRole.textContent="count-in "+(countSlot/2+1); }
+    countSlot++;
+    if(countSlot>=8){ counting=false; slot=0; bar=0; renderBar(); }
+    return;
+  }
+  // move the cursor
+  cells.forEach(c=>c.classList.remove("active"));
+  cells[slot].classList.add("active");
+  // metronome clicks on every beat (even slots); strong on beat 1 of the bar
+  if(slot%2===0) metroClick(slot===0);
+  // strum sound only where the pattern actually hits
+  const pat=patternFor(mode);
+  if(pat[slot].hit) strumTick(slot%2===1);
+  // advance
+  slot++;
+  if(slot>=8){
+    slot=0;
+    bar=(bar+1)%4;
+    renderBar();
+  }
+}
+
+function start(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(timer)return;
+  bar=0; slot=0;
+  if(countIn.checked){ counting=true; countSlot=0; } else { counting=false; renderBar(); }
+  tick();
+  timer=setInterval(tick,interval());
+  startBtn.disabled=true; stopBtn.disabled=false;
+}
+function stop(){
+  clearInterval(timer); timer=null; counting=false;
+  cells.forEach(c=>c.classList.remove("active"));
+  bar=0; slot=0; renderBar();
+  startBtn.disabled=false; stopBtn.disabled=true;
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+
+// init
+renderBar();
+</script>
+</body>
+</html>
