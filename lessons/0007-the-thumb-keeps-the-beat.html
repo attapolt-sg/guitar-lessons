@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 07 · The Thumb Keeps the Beat</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:31px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+  .concept{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+
+  /* chord loop strip */
+  .loop{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0;}
+  .loop .c{font-family:sans-serif;font-weight:800;font-size:20px;color:var(--accent);border:2px solid var(--line);border-radius:10px;padding:8px 18px;background:#fdfbf6;}
+  .loop .sep{align-self:center;color:var(--muted);font-size:22px;}
+
+  /* player */
+  .player{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .modepick{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
+  .modepick button{font-family:inherit;font-size:14px;background:#fff;color:var(--accent);border:1px solid var(--accent);padding:7px 14px;border-radius:8px;cursor:pointer;}
+  .modepick button.sel{background:var(--accent);color:#fff;}
+  .now{text-align:center;margin:8px 0 4px;}
+  .now .name{font-size:56px;font-weight:800;font-family:sans-serif;color:var(--accent);line-height:1;}
+  .now .role{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+
+  /* chord diagram */
+  .dwrap{display:flex;justify-content:center;margin:6px 0 2px;}
+  .dcard{border:2px solid var(--accent);border-radius:12px;padding:8px 12px 4px;background:#fdfbf6;box-shadow:0 6px 16px rgba(168,84,31,.18);}
+
+  /* pluck / strum lane */
+  .lane{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .cell{width:48px;height:60px;border-radius:10px;border:2px solid var(--line);background:#faf6ee;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;transition:transform .06s,background .12s;}
+  .cell.active{background:var(--glow);border-color:var(--accent);transform:translateY(-3px);}
+  .cell.beat{border-color:#c9b48a;}                 /* the four thumb beats stand out a touch */
+  .cell .sym{font-size:20px;font-weight:800;color:var(--accent);}
+  .cell .ghost{font-size:22px;font-weight:800;color:#d8cdba;}
+  .cell .lbl{font-size:11px;color:var(--muted);}
+  .laneNote{text-align:center;font-size:14px;color:var(--muted);min-height:20px;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:14px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:150px;accent-color:var(--accent);}
+  .big{font-size:24px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+  .toggle{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 07 · fingerstyle, in time at last</div>
+  <h1>The Thumb Keeps the Beat</h1>
+  <p class="sub">You locked the strum. Now we move that exact pulse into your picking hand — where the thumb becomes your metronome.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> fingerpick the <b>Em → C → G → D</b> loop with your <b>thumb landing on every
+  beat</b> — a steady, real fingerstyle groove that keeps the rock-solid time you just built with strumming.
+</div>
+
+<h2>The whole trick in one sentence</h2>
+<div class="concept">
+  <b>Your thumb is the new downstrum.</b> In Lesson 06 your strumming arm swung down on every beat and
+  <i>that</i> kept time. Now the <b>thumb (p)</b> takes that job: it plucks a bass note on <b>every single
+  beat</b> — 1, 2, 3, 4 — like a heartbeat. The fingers (<b>i · m</b>) just fill the gaps in between.
+  The pulse doesn't change; only the hand doing it changes.
+</div>
+
+<p>Because your thumb never skips a beat, the timing can't drift — the same reason "constant motion"
+fixed your strumming. This is why we drilled rhythm first: fingerstyle <i>needs</i> a steady thumb, and
+now you have one.</p>
+
+<h2>The pattern</h2>
+<p>Eight plucks per bar, over "1&nbsp;&amp;&nbsp;2&nbsp;&amp;&nbsp;3&nbsp;&amp;&nbsp;4&nbsp;&amp;". The
+<b>thumb (p)</b> hits on every number; a finger hits on every "&":</p>
+<div class="tip">
+  <b>Pattern:</b> <code>(p+a)&nbsp;m&nbsp;p&nbsp;i&nbsp;p&nbsp;m&nbsp;p&nbsp;i</code><br>
+  Beat&nbsp;1 is a <b>pinch</b> — thumb and ring finger (<b>a</b>) pluck <i>together</i>, so the downbeat
+  lands with a little accent, just like the strong first strum in your pop pattern. After that: thumb on
+  2, 3, 4; and <b>m · i</b> alternate on the "&"s.
+</div>
+<ul>
+  <li><b>p (thumb)</b> plays the chord's <i>bass string</i>: Em → 6th, C → 5th, G → 6th, D → 4th. The player names it under the diagram.</li>
+  <li><b>i · m · a</b> pluck strings <b>3 · 2 · 1</b> (G-B-high&nbsp;E) — the same fingers-to-strings map as your <a href="0001-your-first-fingerpicking-pattern.html">very first pattern</a>.</li>
+  <li>Say <b>"beat"</b> out loud on every thumb pluck. If you can hear a steady thumb, you've won.</li>
+</ul>
+
+<h2>The player — feel the pulse carry over</h2>
+<p>Start in <b>Pop strum</b> mode (the one you locked) to set the pulse, then switch to <b>Thumb pulse</b>
+over the <i>same</i> click — notice the thumb lands exactly where your downstrums did. Start at <b>56 BPM</b>.</p>
+
+<div class="player">
+  <div class="modepick" id="modepick">
+    <button data-m="strum" class="sel">🎸 Pop strum (warm-up)</button>
+    <button data-m="finger">🖐️ Thumb pulse (fingerstyle)</button>
+  </div>
+
+  <div class="now">
+    <div class="name" id="nowName">Em</div>
+    <div class="role" id="nowRole">bar 1 of 4</div>
+  </div>
+  <div class="dwrap"><div class="dcard" id="dcard"></div></div>
+
+  <div class="lane" id="lane"></div>
+  <div class="laneNote" id="laneNote"></div>
+
+  <div class="controls">
+    <button id="startBtn">▶ Start loop</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="40" max="100" value="56" step="2">
+      <span class="big" id="bpm">56</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="controls">
+    <label class="toggle"><input type="checkbox" id="countIn" checked> 1-bar count-in before the loop</label>
+  </div>
+</div>
+
+<h2>Practice routine (about 20 min)</h2>
+<div class="step"><span class="n">1</span><b>Set the pulse with the strum (3 min).</b> Pop-strum mode at 56 BPM. Get the loop feeling locked, like last lesson.</div>
+<div class="step"><span class="n">2</span><b>Thumb alone, no fingers (5 min).</b> Switch to Thumb pulse, but <i>only</i> play the thumb on every beat — ignore the i·m for now. Just <code>p p p p</code>, one bass note per beat, dead in time.</div>
+<div class="step"><span class="n">3</span><b>Add the fingers on the "&"s (7 min).</b> Now let <b>m · i</b> fill the gaps: <code>(p+a) m p i p m p i</code>. Keep the thumb steady — the fingers fit <i>around</i> it, they don't disturb it.</div>
+<div class="step"><span class="n">4</span><b>The one-minute test (5 min).</b> Hold the full pattern around Em→C→G→D for 60 seconds. Success = the thumb never stutters at a chord change.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me: <b>(1)</b> fastest BPM where the <i>thumb</i> stayed steady for a full minute,
+<b>(2)</b> did the pinch on beat 1 feel natural or awkward, and <b>(3)</b> which chord's bass note
+was hardest for the thumb to find. That points us at Lesson 08 — likely a <b>real melody</b> over this
+thumb pulse, or our first <b>Thai song</b>. 🎶</p>
+
+<footer>
+  Lesson 07 · Guitar workspace · Builds on
+  <a href="0006-lock-the-strum-constant-motion.html">Lesson 06</a> ·
+  Chords: <a href="../reference/00-chords-and-right-hand.html">reference sheet</a>
+</footer>
+</div>
+
+<script>
+// ---- Chord shapes: strings low-E(6) -> high-E(1). fret 0=open, -1=muted; fingers 1-4. ----
+const CHORDS={
+  Em:{frets:[0,2,2,0,0,0], fingers:[0,2,3,0,0,0]},
+  C: {frets:[-1,3,2,0,1,0],fingers:[0,3,2,0,1,0]},
+  G: {frets:[3,2,0,0,0,3], fingers:[2,1,0,0,0,3]},
+  D: {frets:[-1,-1,0,2,3,2],fingers:[0,0,0,1,3,2]},
+};
+// Loop order + which STRING the thumb (p) plays as the bass for each chord (6=low E ... 1=high E).
+const LOOP=[
+  {name:"Em", bass:6, bassLbl:"6th string (low E)"},
+  {name:"C",  bass:5, bassLbl:"5th string (A)"},
+  {name:"G",  bass:6, bassLbl:"6th string (low E)"},
+  {name:"D",  bass:4, bassLbl:"4th string (D)"},
+];
+
+// ---- Draw a chord diagram (same style as the other lessons) ----
+function chordSVG(name){
+  const c=CHORDS[name];
+  const W=104,H=124,padX=16,padTop=26,rows=4,cols=6;
+  const gridW=W-padX*2,gridH=76,colGap=gridW/(cols-1),rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="2.6" fill="#1c1a17"/>`;
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0"/>`;}
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0"/>`;}
+  c.frets.forEach((f,i)=>{
+    const x=padX+i*colGap;
+    if(f===-1){s+=`<text x="${x}" y="${padTop-8}" text-anchor="middle" font-size="12" fill="#6b6459">✕</text>`;}
+    else if(f===0){s+=`<circle cx="${x}" cy="${padTop-11}" r="4.5" fill="none" stroke="#1c1a17" stroke-width="1.4"/>`;}
+    else{
+      const y=padTop+(f-0.5)*rowGap, fg=c.fingers[i];
+      s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="#1c1a17"/>`;
+      if(fg>0)s+=`<text x="${x}" y="${y+3.6}" text-anchor="middle" font-size="10.5" fill="#fff" font-family="sans-serif">${fg}</text>`;
+    }
+  });
+  s+=`</svg>`;return s;
+}
+
+// ---- Patterns ----
+// Finger pattern: 8 plucks. Thumb (p) on every beat (even slots); m/i alternate on the &s;
+// beat 1 is a pinch (p together with a). `str` is for the pluck sound pitch. beat=true marks a thumb beat.
+function fingerCells(bass){
+  return [
+    {sym:"p+a", str:bass, lbl:"1", beat:true, strong:true, pinch:1},
+    {sym:"m",   str:2,    lbl:"&"},
+    {sym:"p",   str:bass, lbl:"2", beat:true},
+    {sym:"i",   str:3,    lbl:"&"},
+    {sym:"p",   str:bass, lbl:"3", beat:true},
+    {sym:"m",   str:2,    lbl:"&"},
+    {sym:"p",   str:bass, lbl:"4", beat:true},
+    {sym:"i",   str:3,    lbl:"&"},
+  ];
+}
+// Strum warm-up: the locked pop pattern from Lesson 06. hit=false means swing past (constant motion).
+function strumCells(){
+  const dir=i=>(i%2===0?"↓":"↑"), lbl=i=>(i%2===0?String(i/2+1):"&");
+  const hits=[1,0,1,1,0,1,1,1]; // ↓ · ↓ ↑ · ↑ ↓ ↑
+  return hits.map((h,i)=>({sym:dir(i),lbl:lbl(i),hit:!!h,beat:i%2===0}));
+}
+
+// ---- State ----
+let mode="strum", audioCtx=null, timer=null;
+let slot=0, bar=0;
+let counting=false, countSlot=0;
+
+const modepick=document.getElementById("modepick");
+const nowName=document.getElementById("nowName"), nowRole=document.getElementById("nowRole");
+const dcard=document.getElementById("dcard"), lane=document.getElementById("lane"), laneNote=document.getElementById("laneNote");
+const tempo=document.getElementById("tempo"), bpm=document.getElementById("bpm");
+const startBtn=document.getElementById("startBtn"), stopBtn=document.getElementById("stopBtn");
+const countIn=document.getElementById("countIn");
+tempo.addEventListener("input",()=>{bpm.textContent=tempo.value; if(timer){clearInterval(timer);timer=setInterval(tick,interval());}});
+
+// Build the 8 lane cells once; re-fill contents each bar/mode.
+const cells=[];
+for(let i=0;i<8;i++){const d=document.createElement("div");d.className="cell";lane.appendChild(d);cells.push(d);}
+
+function patFor(){ return mode==="finger" ? fingerCells(LOOP[bar].bass) : strumCells(); }
+
+function renderBar(){
+  const L=LOOP[bar];
+  nowName.textContent=L.name;
+  nowRole.textContent="bar "+(bar+1)+" of 4";
+  dcard.innerHTML=chordSVG(L.name);
+  const pat=patFor();
+  cells.forEach((cell,i)=>{
+    const step=pat[i];
+    cell.classList.toggle("beat", !!step.beat);
+    if(mode==="finger"){
+      cell.innerHTML=`<div class="sym">${step.sym}</div><div class="lbl">${step.lbl}</div>`;
+    }else{
+      const cls=step.hit?"sym":"ghost";
+      cell.innerHTML=`<div class="${cls}">${step.sym}</div><div class="lbl">${step.lbl}</div>`;
+    }
+    cell.classList.remove("active");
+  });
+  laneNote.textContent = mode==="finger"
+    ? "thumb (p) on every beat — bass = "+L.bassLbl+" · m·i on the &s · beat 1 is a pinch (p+a)"
+    : "the locked pop strum: ↓ · ↓ ↑ · ↑ ↓ ↑ — keep the hand swinging";
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll("#modepick button").forEach(b=>b.classList.toggle("sel",b.dataset.m===m));
+  renderBar();
+}
+modepick.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ if(!timer){bar=0;} setMode(b.dataset.m); }));
+
+// ---- Sounds ----
+// Metronome click on every beat; strong on beat 1.
+function metroClick(strong){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.frequency.value=strong?1100:760;
+  g.gain.setValueAtTime(strong?0.45:0.22,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.06);
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.07);
+}
+// A plucked-string tone. Lower pitch for the thumb/bass, higher for i·m·a.
+// human string number 6..1 -> a rough open-string frequency, good enough to hear the shape.
+const STRFREQ={6:82,5:110,4:147,3:196,2:247,1:330};
+function pluck(strNum){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type="triangle";
+  o.frequency.value=STRFREQ[strNum]||196;
+  g.gain.setValueAtTime(0.0001,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.3,audioCtx.currentTime+0.005); // quick attack
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.32); // gentle decay
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.34);
+}
+// Strum tick: short filtered noise so a hit sounds different from the metronome.
+function strumTick(up){
+  if(!audioCtx)return;
+  const dur=0.09, sr=audioCtx.sampleRate, buf=audioCtx.createBuffer(1,sr*dur,sr), d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++){ d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2); }
+  const src=audioCtx.createBufferSource(); src.buffer=buf;
+  const f=audioCtx.createBiquadFilter(); f.type="bandpass"; f.frequency.value=up?2600:1500; f.Q.value=0.7;
+  const g=audioCtx.createGain(); g.gain.value=0.32;
+  src.connect(f).connect(g).connect(audioCtx.destination);
+  src.start();
+}
+
+// Interval = one EIGHTH note. eighth = 30000/BPM ms.
+function interval(){return 30000/parseInt(tempo.value,10);}
+
+function tick(){
+  // Count-in: one bar of quarter clicks before the loop.
+  if(counting){
+    if(countSlot%2===0){ metroClick(countSlot===0); nowRole.textContent="count-in "+(countSlot/2+1); }
+    countSlot++;
+    if(countSlot>=8){ counting=false; slot=0; bar=0; renderBar(); }
+    return;
+  }
+  cells.forEach(c=>c.classList.remove("active"));
+  cells[slot].classList.add("active");
+  const pat=patFor(), step=pat[slot];
+  // metronome on every beat (even slots), strong on beat 1
+  if(slot%2===0) metroClick(slot===0);
+  // instrument sound
+  if(mode==="finger"){
+    pluck(step.str);            // thumb plays the bass string; fingers play their own string
+    if(step.pinch) pluck(1);    // beat-1 pinch: ring finger (a) also plucks the high E (string 1)
+  }else if(step.hit){
+    strumTick(slot%2===1);
+  }
+  // advance
+  slot++;
+  if(slot>=8){ slot=0; bar=(bar+1)%4; renderBar(); }
+}
+
+function start(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(timer)return;
+  bar=0; slot=0;
+  if(countIn.checked){ counting=true; countSlot=0; } else { counting=false; renderBar(); }
+  tick();
+  timer=setInterval(tick,interval());
+  startBtn.disabled=true; stopBtn.disabled=false;
+}
+function stop(){
+  clearInterval(timer); timer=null; counting=false;
+  cells.forEach(c=>c.classList.remove("active"));
+  bar=0; slot=0; renderBar();
+  startBtn.disabled=false; stopBtn.disabled=true;
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+
+// init
+renderBar();
+</script>
+</body>
+</html>
