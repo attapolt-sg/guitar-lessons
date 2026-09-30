@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 08 · Your First Melody Over the Thumb</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+    --mel:#2f6f8f;  /* melody accent — a cool blue to contrast the warm thumb accent */
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:31px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+  .concept{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+
+  /* chord loop strip */
+  .loop{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0;}
+  .loop .c{font-family:sans-serif;font-weight:800;font-size:20px;color:var(--accent);border:2px solid var(--line);border-radius:10px;padding:8px 18px;background:#fdfbf6;}
+  .loop .sep{align-self:center;color:var(--muted);font-size:22px;}
+
+  /* player */
+  .player{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .now{text-align:center;margin:8px 0 4px;}
+  .now .name{font-size:56px;font-weight:800;font-family:sans-serif;color:var(--accent);line-height:1;}
+  .now .role{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+  /* what's coming next — small, muted, so it never competes with the big current chord */
+  .now .next{font-size:14px;color:var(--muted);font-family:sans-serif;margin-top:6px;}
+  .now .next b{color:var(--accent);font-weight:800;}
+
+  /* chord diagram */
+  .dwrap{display:flex;justify-content:center;margin:6px 0 2px;}
+  .dcard{border:2px solid var(--accent);border-radius:12px;padding:8px 12px 4px;background:#fdfbf6;box-shadow:0 6px 16px rgba(168,84,31,.18);}
+
+  /* pluck lane */
+  .lane{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .cell{width:52px;height:66px;border-radius:10px;border:2px solid var(--line);background:#faf6ee;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;transition:transform .06s,background .12s;}
+  .cell.active{background:var(--glow);border-color:var(--accent);transform:translateY(-3px);}
+  .cell.beat{border-color:#c9b48a;}
+  .cell .mel{font-size:15px;font-weight:800;color:var(--mel);line-height:1.1;}      /* melody note name */
+  .cell .thumb{font-size:15px;font-weight:800;color:var(--accent);line-height:1.1;}  /* p */
+  .cell .rest{font-size:20px;font-weight:800;color:#d8cdba;}
+  .cell .lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+  .laneNote{text-align:center;font-size:14px;color:var(--muted);min-height:22px;}
+  .melStrip{text-align:center;font-size:15px;color:var(--mel);font-weight:700;margin:6px 0 2px;letter-spacing:.04em;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:14px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:150px;accent-color:var(--accent);}
+  .big{font-size:24px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+  .toggle{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 08 · melody + accompaniment</div>
+  <h1>Your First Melody Over the Thumb</h1>
+  <p class="sub">Two things at once, finally: the thumb keeps time underneath while your fingers sing a tune on top.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> play a short <b>melody</b> on the top strings while your <b>thumb keeps its steady
+  beat</b> — a real fingerstyle texture, on the same Em → C → G → D loop and the same chord shapes you own.
+</div>
+
+<h2>The idea that makes this easy</h2>
+<div class="concept">
+  <b>The melody hides inside the chords you already hold.</b> You don't fret anything new. While you hold
+  each chord, the melody is simply <i>which top string you pluck</i> on each beat. So your fretting hand
+  keeps doing the one job it knows — hold the shape — and the <b>tune comes from your picking-hand choices</b>.
+</div>
+
+<p>Under it all, the <b>thumb still plays a bass note on every beat</b> — the pulse from
+<a href="0007-the-thumb-keeps-the-beat.html">Lesson 07</a>, unchanged. The new part is that on beats
+<b>1 and 3</b> a finger plucks a chosen melody note <i>together</i> with the thumb (a pinch), and those
+notes in a row make the melody.</p>
+
+<h2>The melody</h2>
+<p>One note per pinch, two per bar (on beats 1 and 3). Read left to right, it's a simple rising-and-falling line:</p>
+<div class="melStrip">Em: E · B  |  C: E · C  |  G: B · G  |  D: F♯ · D</div>
+<div class="tip">
+  <b>How each note is made</b> (no new fretting — all inside the chord shape):<br>
+  • <b>string 1 (high E)</b> plucked with <b>a</b> (ring) &nbsp; • <b>string 2 (B)</b> plucked with <b>m</b> (middle)<br>
+  The player names the melody note and which string it's on, every beat.
+</div>
+
+<h2>The player</h2>
+<p>Blue = the <b>melody note</b> your finger plucks; orange <b>p</b> = the <b>thumb bass</b>. On beats 1 &amp; 3
+they land together (a pinch). Beats 2 &amp; 4 are thumb alone. Start slow — <b>52 BPM</b> — and use the
+toggle to drop the melody first if you want to warm up the thumb.</p>
+
+<div class="player">
+  <div class="now">
+    <div class="name" id="nowName">Em</div>
+    <div class="role" id="nowRole">bar 1 of 4</div>
+    <div class="next" id="nowNext">next → <b>C</b></div>
+  </div>
+  <div class="dwrap"><div class="dcard" id="dcard"></div></div>
+
+  <div class="lane" id="lane"></div>
+  <div class="laneNote" id="laneNote"></div>
+
+  <div class="controls">
+    <button id="startBtn">▶ Start loop</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="40" max="92" value="52" step="2">
+      <span class="big" id="bpm">52</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="controls">
+    <label class="toggle"><input type="checkbox" id="melOn" checked> play the melody (uncheck = thumb pulse only)</label>
+    <label class="toggle"><input type="checkbox" id="countIn" checked> 1-bar count-in</label>
+  </div>
+</div>
+
+<h2>Practice routine (about 20 min)</h2>
+<div class="step"><span class="n">1</span><b>Thumb alone (4 min).</b> Uncheck "play the melody." Just the thumb bass on every beat around the loop, steady — your Lesson 07 groove, as a warm-up.</div>
+<div class="step"><span class="n">2</span><b>Melody alone, no thumb (5 min).</b> Ignore the player's thumb for a moment. Hold each chord and just pluck the melody notes on beats 1 &amp; 3: <b>E B · E C · B G · F♯ D</b>. Hear the tune on its own.</div>
+<div class="step"><span class="n">3</span><b>Put them together, slowly (7 min).</b> Re-check the melody. On beats 1 &amp; 3, thumb and finger pluck <i>at the same instant</i> (the pinch). Go painfully slow — both notes landing together matters more than speed.</div>
+<div class="step"><span class="n">4</span><b>One clean loop (4 min).</b> Play the full 4 bars once through with melody + thumb, no stops. That's the win.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me: <b>(1)</b> could you keep the thumb steady <i>while</i> the melody moved, or did one
+disturb the other, <b>(2)</b> which bar's melody was hardest to pluck cleanly, and <b>(3)</b> want
+Lesson 09 to turn this into a fuller arrangement, or move to a real <b>Thai song</b> next? 🎶</p>
+
+<footer>
+  <a href="../index.html">← All lessons</a> · Lesson 08 · Guitar workspace · Builds on
+  <a href="0007-the-thumb-keeps-the-beat.html">Lesson 07</a> ·
+  Chords: <a href="../reference/00-chords-and-right-hand.html">reference sheet</a>
+</footer>
+</div>
+
+<script>
+// ---- Chord shapes: strings low-E(6) -> high-E(1). fret 0=open, -1=muted; fingers 1-4. ----
+const CHORDS={
+  Em:{frets:[0,2,2,0,0,0], fingers:[0,2,3,0,0,0]},
+  C: {frets:[-1,3,2,0,1,0],fingers:[0,3,2,0,1,0]},
+  G: {frets:[3,2,0,0,0,3], fingers:[2,1,0,0,0,3]},
+  D: {frets:[-1,-1,0,2,3,2],fingers:[0,0,0,1,3,2]},
+};
+
+// Open-string pitches (Hz) for strings 6..1 (low E .. high E). Used to synth any fretted note.
+const OPEN={6:82.41,5:110.00,4:146.83,3:196.00,2:246.94,1:329.63};
+function freq(string,fret){ return OPEN[string]*Math.pow(2,fret/12); }
+
+// ---- The piece: 4 bars. Each bar = a chord, its thumb bass string, and 2 melody notes (beats 1 & 3).
+//   bass: the string the thumb plucks (matches the chord's bass); melody notes live inside the shape.
+//   finger: 'a' for string 1, 'm' for string 2.
+const SONG=[
+  {chord:"Em", bassStr:6, bassLbl:"6th (low E)",
+    mel:[{beat:1,string:1,fret:0,note:"E",finger:"a"},{beat:3,string:2,fret:0,note:"B",finger:"m"}]},
+  {chord:"C",  bassStr:5, bassLbl:"5th (A→C)",
+    mel:[{beat:1,string:1,fret:0,note:"E",finger:"a"},{beat:3,string:2,fret:1,note:"C",finger:"m"}]},
+  {chord:"G",  bassStr:6, bassLbl:"6th (low E→G)",
+    mel:[{beat:1,string:2,fret:0,note:"B",finger:"m"},{beat:3,string:1,fret:3,note:"G",finger:"a"}]},
+  {chord:"D",  bassStr:4, bassLbl:"4th (D)",
+    mel:[{beat:1,string:1,fret:2,note:"F♯",finger:"a"},{beat:3,string:2,fret:3,note:"D",finger:"m"}]},
+];
+
+// ---- Draw a chord diagram (same style as the other lessons). Optionally ring a melody string. ----
+function chordSVG(name, hiString){
+  const c=CHORDS[name];
+  const W=104,H=124,padX=16,padTop=26,rows=4,cols=6;
+  const gridW=W-padX*2,gridH=76,colGap=gridW/(cols-1),rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="2.6" fill="#1c1a17"/>`;
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0"/>`;}
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0"/>`;}
+  c.frets.forEach((f,i)=>{
+    const x=padX+i*colGap;
+    // i is 0..5 for strings 6..1; convert to human string number
+    const humanStr=6-i;
+    if(f===-1){s+=`<text x="${x}" y="${padTop-8}" text-anchor="middle" font-size="12" fill="#6b6459">✕</text>`;}
+    else if(f===0){s+=`<circle cx="${x}" cy="${padTop-11}" r="4.5" fill="none" stroke="#1c1a17" stroke-width="1.4"/>`;}
+    else{
+      const y=padTop+(f-0.5)*rowGap, fg=c.fingers[i];
+      s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="#1c1a17"/>`;
+      if(fg>0)s+=`<text x="${x}" y="${y+3.6}" text-anchor="middle" font-size="10.5" fill="#fff" font-family="sans-serif">${fg}</text>`;
+    }
+    // ring the current melody string in blue at the top
+    if(humanStr===hiString){s+=`<circle cx="${x}" cy="${padTop-11}" r="7" fill="none" stroke="#2f6f8f" stroke-width="2"/>`;}
+  });
+  s+=`</svg>`;return s;
+}
+
+// ---- Build the 8 eighth-note slots for a bar of the song ----
+// thumb (p) plays the bass on every beat (slots 0,2,4,6); melody plucks on beats 1 & 3 (slots 0 & 4).
+function barSlots(barIdx){
+  const b=SONG[barIdx];
+  const melByBeat={1:b.mel[0],3:b.mel[1]}; // beat number -> melody note
+  const slots=[];
+  for(let i=0;i<8;i++){
+    const isBeat=(i%2===0);
+    if(!isBeat){ slots.push({type:"rest",lbl:"&"}); continue; }
+    const beatNo=i/2+1;               // 1,2,3,4
+    const mel=melByBeat[beatNo]||null;
+    const bassFret=CHORDS[b.chord].frets[6-b.bassStr]; // the chord's fret on the bass string
+    slots.push({type:"beat", lbl:String(beatNo), beatNo, bassStr:b.bassStr, bassFret, mel});
+  }
+  return slots;
+}
+
+// ---- State ----
+let audioCtx=null, timer=null, slot=0, bar=0;
+let counting=false, countSlot=0;
+
+const nowName=document.getElementById("nowName"), nowRole=document.getElementById("nowRole"), nowNext=document.getElementById("nowNext");
+const dcard=document.getElementById("dcard"), lane=document.getElementById("lane"), laneNote=document.getElementById("laneNote");
+const tempo=document.getElementById("tempo"), bpm=document.getElementById("bpm");
+const startBtn=document.getElementById("startBtn"), stopBtn=document.getElementById("stopBtn");
+const countIn=document.getElementById("countIn"), melOn=document.getElementById("melOn");
+tempo.addEventListener("input",()=>{bpm.textContent=tempo.value; if(timer){clearInterval(timer);timer=setInterval(tick,interval());}});
+melOn.addEventListener("change",renderBar);
+
+// Build 8 lane cells once.
+const cells=[];
+for(let i=0;i<8;i++){const d=document.createElement("div");d.className="cell";lane.appendChild(d);cells.push(d);}
+
+function renderBar(){
+  const b=SONG[bar], slots=barSlots(bar);
+  nowName.textContent=b.chord;
+  nowRole.textContent="bar "+(bar+1)+" of 4";
+  // the chord coming up next — wraps from the last bar back to the first
+  nowNext.innerHTML="next &rarr; <b>"+SONG[(bar+1)%4].chord+"</b>";
+  // ring beat-1's melody string on the diagram as a hint
+  dcard.innerHTML=chordSVG(b.chord, melOn.checked ? b.mel[0].string : 0);
+  cells.forEach((cell,i)=>{
+    const s=slots[i];
+    cell.classList.toggle("beat", s.type==="beat");
+    cell.classList.remove("active");
+    if(s.type==="rest"){
+      cell.innerHTML=`<div class="rest">·</div><div class="lbl">&amp;</div>`;
+    }else{
+      // thumb line always; melody line on beats 1 & 3 when melody is on
+      let html=`<div class="thumb">p</div>`;
+      if(melOn.checked && s.mel){ html=`<div class="mel">${s.mel.note}·${s.mel.finger}</div>`+html; }
+      cell.innerHTML=html+`<div class="lbl">${s.lbl}</div>`;
+    }
+  });
+  laneNote.textContent = melOn.checked
+    ? "blue = melody note (string "+b.mel[0].string+" & 2) · orange p = thumb bass on the "+b.bassLbl
+    : "thumb only: bass on the "+b.bassLbl+", every beat";
+}
+
+// ---- Sounds ----
+function metroClick(strong){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.frequency.value=strong?1100:760;
+  g.gain.setValueAtTime(strong?0.4:0.2,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.06);
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.07);
+}
+// A plucked-string tone at a given frequency. Slightly brighter for melody notes.
+function tone(f, bright){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=bright?"triangle":"triangle";
+  o.frequency.value=f;
+  g.gain.setValueAtTime(0.0001,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(bright?0.32:0.28,audioCtx.currentTime+0.005);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+(bright?0.45:0.34));
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.5);
+}
+
+function interval(){return 30000/parseInt(tempo.value,10);}  // one eighth note
+
+function tick(){
+  if(counting){
+    if(countSlot%2===0){ metroClick(countSlot===0); nowRole.textContent="count-in "+(countSlot/2+1); }
+    countSlot++;
+    if(countSlot>=8){ counting=false; slot=0; bar=0; renderBar(); }
+    return;
+  }
+  cells.forEach(c=>c.classList.remove("active"));
+  cells[slot].classList.add("active");
+  const slots=barSlots(bar), s=slots[slot];
+  if(slot%2===0){                       // a beat
+    metroClick(slot===0);
+    tone(freq(s.bassStr, s.bassFret), false);                                  // thumb bass note
+    if(melOn.checked && s.mel){ tone(freq(s.mel.string, s.mel.fret), true); }  // melody note (pinch)
+  }
+  slot++;
+  if(slot>=8){ slot=0; bar=(bar+1)%4; renderBar(); }
+}
+
+function start(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(timer)return;
+  bar=0; slot=0;
+  if(countIn.checked){ counting=true; countSlot=0; } else { counting=false; renderBar(); }
+  tick();
+  timer=setInterval(tick,interval());
+  startBtn.disabled=true; stopBtn.disabled=false;
+}
+function stop(){
+  clearInterval(timer); timer=null; counting=false;
+  cells.forEach(c=>c.classList.remove("active"));
+  bar=0; slot=0; renderBar();
+  startBtn.disabled=false; stopBtn.disabled=true;
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+
+// init
+renderBar();
+</script>
+</body>
+</html>
