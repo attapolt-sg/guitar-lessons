@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 11 · Travis Picking — Alternating Bass Fingerstyle</title>
+<style>
+  :root{
+    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
+    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+    --bass:#3a5a8c;   /* thumb bass — blue */
+    --mel:#2f6f8f;    /* finger pick — teal */
+  }
+  *{box-sizing:border-box;}
+  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
+  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  header{border-bottom:3px double var(--line);padding-bottom:18px;}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  h1{font-size:31px;margin:6px 0 6px;letter-spacing:-.01em;}
+  h2{font-size:22px;margin:38px 0 10px;border-left:4px solid var(--accent);padding-left:12px;}
+  h3{font-size:18px;margin:22px 0 6px;}
+  p,li{font-size:17px;}
+  .sub{color:var(--muted);font-size:15px;}
+  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
+  .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
+  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  a{color:var(--accent);}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
+  .concept{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+
+  /* bass-note map table */
+  .bass-map{width:100%;border-collapse:collapse;margin:14px 0;font-size:16px;}
+  .bass-map th,.bass-map td{border:1px solid var(--line);padding:8px 12px;text-align:center;}
+  .bass-map th{background:#f6efe2;font-family:sans-serif;}
+  .bass-map td.chord{font-family:sans-serif;font-weight:800;color:var(--accent);font-size:18px;}
+
+  /* player */
+  .player{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .modepick{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
+  .modepick button{font-family:inherit;font-size:14px;background:#fff;color:var(--accent);border:1px solid var(--accent);padding:7px 14px;border-radius:8px;cursor:pointer;}
+  .modepick button.sel{background:var(--accent);color:#fff;}
+  .now{text-align:center;margin:8px 0 4px;}
+  .now .name{font-size:56px;font-weight:800;font-family:sans-serif;color:var(--accent);line-height:1;}
+  .now .role{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+  .now .next{font-size:15px;color:var(--muted);margin-top:6px;}
+  .now .next b{font-family:sans-serif;color:var(--accent);}
+
+  /* chord diagram */
+  .dwrap{display:flex;justify-content:center;margin:6px 0 2px;}
+  .dcard{border:2px solid var(--accent);border-radius:12px;padding:8px 12px 4px;background:#fdfbf6;box-shadow:0 6px 16px rgba(168,84,31,.18);}
+
+  /* pluck lane */
+  .lane{display:flex;gap:8px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .cell{width:52px;height:66px;border-radius:10px;border:2px solid var(--line);background:#faf6ee;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:sans-serif;transition:transform .06s,background .12s;}
+  .cell.active{background:var(--glow);border-color:var(--accent);transform:translateY(-3px);}
+  .cell .thumb{font-size:20px;font-weight:800;color:var(--bass);line-height:1.05;}   /* thumb bass (p) */
+  .cell .fing{font-size:15px;font-weight:800;color:var(--mel);line-height:1.05;}      /* finger pick */
+  .cell .rest{font-size:20px;font-weight:800;color:#d8cdba;}                           /* hand rests */
+  .cell .lbl{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .laneNote{text-align:center;font-size:14px;color:var(--muted);min-height:20px;}
+  .legend{text-align:center;font-size:13px;color:var(--muted);margin-top:2px;}
+  .legend .b{color:var(--bass);font-weight:700;}
+  .legend .m{color:var(--mel);font-weight:700;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:14px;}
+  button{font-family:inherit;font-size:16px;background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);}
+  button:disabled{opacity:.4;cursor:default;}
+  .tempo{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--muted);}
+  input[type=range]{width:150px;accent-color:var(--accent);}
+  .big{font-size:24px;font-weight:700;color:var(--ink);font-family:sans-serif;}
+  .toggle{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Lesson 11 · real fingerstyle at last</div>
+  <h1>Travis Picking — Alternating Bass</h1>
+  <p class="sub">The rolling fingerstyle sound. Your thumb keeps a steady alternating bass while your
+  fingers pick a gentle pattern on top — the two hands finally fully independent.</p>
+</header>
+
+<div class="goal">
+  <b>Today's win:</b> keep your <b>thumb alternating between two bass strings</b> on every beat while your
+  <b>fingers pick the top strings in between</b> — a continuous, rolling Travis pattern, on the same
+  G / Em / C / D chords you already own.
+</div>
+
+<h2>What Travis picking is</h2>
+<p>In <a href="0010-boom-chick-bass-and-strum.html">Lesson 10</a> your thumb played a bass note and your
+hand strummed the chord. Travis picking replaces the strum with <b>individual finger plucks</b> — and asks
+the thumb to <b>keep moving between two bass strings</b> instead of repeating one.</p>
+<div class="concept">
+  <b>The engine:</b> the <b>thumb</b> plays a bass note on <i>every beat</i>, bouncing between a
+  <b>low string</b> and a <b>higher string</b> (low–high–low–high). On top of that steady pulse, your
+  <b>fingers</b> (i, m, a) pluck the treble strings on the "&"s between the beats. The two layers
+  interlock into one rolling sound — that's the whole trick.
+</div>
+
+<h2>The idea that makes it possible</h2>
+<div class="tip">
+  <b>The thumb is on autopilot.</b> Just like the metronome pulse from Lesson 07, the thumb's job never
+  changes — low, high, low, high — so you can stop thinking about it. Once the thumb runs on its own, your
+  fingers are free to add the pattern on top. <b>Get the thumb steady first, alone, before adding a single
+  finger.</b>
+</div>
+
+<h2>Which two bass strings for each chord</h2>
+<p>The thumb alternates between the chord's <b>root</b> (its low bass note) and a <b>higher string</b> inside
+the same shape. You're already holding every one of these — the thumb just picks them out one at a time:</p>
+
+<table class="bass-map">
+  <tr><th>Chord</th><th>Beat 1 &amp; 3 (low)</th><th>Beat 2 &amp; 4 (high)</th></tr>
+  <tr><td class="chord">G</td><td>6th string (G, 3rd fret)</td><td>4th string (D, open)</td></tr>
+  <tr><td class="chord">Em</td><td>6th string (E, open)</td><td>4th string (E, 2nd fret)</td></tr>
+  <tr><td class="chord">C</td><td>5th string (C, 3rd fret)</td><td>4th string (D, open)</td></tr>
+  <tr><td class="chord">D</td><td>4th string (D, open)</td><td>3rd string (A, 2nd fret)</td></tr>
+</table>
+<div class="tip">
+  <b>Note on C:</b> its high alternate here is the open 4th string (D). That's a passing note, not strictly
+  inside the C chord — but it flies by so fast it sounds perfectly natural, and it's the easiest reach.
+  It's the standard folk choice.
+</div>
+
+<h2>The player — Travis picking trainer</h2>
+<p>The lane shows all eight eighth-notes of a bar. A <b class="legend"><span class="b">blue p</span></b> =
+the <b>thumb bass</b> (with the string it plucks); a <b class="legend"><span class="m">teal note</span></b>
+= a <b>finger pick</b> (with which finger). Start with <b>thumb only</b> to lock the pulse, then add the
+fingers. Go slow — <b>52&nbsp;BPM</b>.</p>
+
+<div class="player">
+  <div class="modepick" id="modepick">
+    <button data-m="thumb" class="sel">Thumb only (alternating bass)</button>
+    <button data-m="roll">Full Travis roll</button>
+  </div>
+
+  <div class="now">
+    <div class="name" id="nowName">G</div>
+    <div class="role" id="nowRole">bar 1 of 4</div>
+    <div class="next" id="nowNext">next → <b>Em</b></div>
+  </div>
+  <div class="dwrap"><div class="dcard" id="dcard"></div></div>
+
+  <div class="lane" id="lane"></div>
+  <div class="laneNote" id="laneNote"></div>
+  <div class="legend"><span class="b">p</span> = thumb bass · <span class="m">note·finger</span> = finger pluck (i, m, a)</div>
+
+  <div class="controls">
+    <button id="startBtn">▶ Start loop</button>
+    <button id="stopBtn" class="ghost" disabled>■ Stop</button>
+    <div class="tempo">
+      <span>Tempo</span>
+      <input type="range" id="tempo" min="40" max="92" value="52" step="2">
+      <span class="big" id="bpm">52</span><span>BPM</span>
+    </div>
+  </div>
+  <div class="controls">
+    <label class="toggle"><input type="checkbox" id="countIn" checked> 1-bar count-in</label>
+    <label class="toggle"><input type="checkbox" id="chords" checked> show chord diagrams</label>
+  </div>
+</div>
+
+<h2>The two patterns</h2>
+<div class="tip">
+  <b>1 · Thumb only</b> — <code>p · p · p · p</code> (low, high, low, high)<br>
+  Just the alternating bass, one thumb pluck per beat. This is your foundation — it must be dead steady
+  before you add fingers. Think of it as Lesson 10's "boom" happening on <i>every</i> beat.
+</div>
+<div class="tip">
+  <b>2 · Full Travis roll</b> — thumb on the beats, a finger on each "&"<br>
+  The thumb keeps its low–high–low–high pulse, and your fingers pick a top string on every "&". The result
+  is the continuous rolling pattern. Keep the thumb loud and even; let the finger notes float lightly on top.
+</div>
+
+<h2>Making it click</h2>
+<div class="tip">
+  <b>Thumb independence is the whole lesson.</b> If the fingers make your thumb hesitate, stop, drop back to
+  <b>thumb only</b> for a minute, then re-add just one finger note at a time.
+</div>
+<div class="tip">
+  <b>Pinch the downbeat.</b> On beat 1, the thumb bass and a finger note often land together (a pinch, like
+  Lesson 08). Landing those two exactly together is what makes the pattern lock.
+</div>
+
+<h2>Practice routine (about 20 min)</h2>
+<div class="step"><span class="n">1</span><b>Thumb alone, one chord (5 min).</b> Hold G. Alternate the thumb: 6th, 4th, 6th, 4th — low, high, low, high — at 52 BPM. Eyes closed, until it needs no thought.</div>
+<div class="step"><span class="n">2</span><b>Thumb around the loop (4 min).</b> Keep the alternating thumb going while changing chords G → Em → C → D. Use the bass table above for each chord's two strings.</div>
+<div class="step"><span class="n">3</span><b>Add one finger (5 min).</b> Switch the player to the full roll. On one chord, add just the finger notes on the "&"s. Keep the thumb from flinching.</div>
+<div class="step"><span class="n">4</span><b>Full roll, one chord (4 min).</b> Play the complete Travis roll on G until it feels smooth and even.</div>
+<div class="step"><span class="n">5</span><b>Full roll around the loop (2 min).</b> Try the whole G → Em → C → D loop with the roll, slowly, once through. That's the win.</div>
+
+<h2>Tell me the result</h2>
+<p>Message me: <b>(1)</b> could you keep the thumb alternating steadily <i>while</i> the fingers picked on
+top, or did one disturb the other, <b>(2)</b> which chord's bass alternation was hardest to reach cleanly,
+and <b>(3)</b> ready to put this on a real <b>Thai song</b> next, or want one more pattern-building lesson
+first? 🎶</p>
+
+<footer>
+  <a href="../index.html">← All lessons</a> · Lesson 11 · Guitar workspace · Builds on
+  <a href="0007-the-thumb-keeps-the-beat.html">Lesson 07</a> &amp;
+  <a href="0010-boom-chick-bass-and-strum.html">Lesson 10</a> ·
+  Chords: <a href="../reference/00-chords-and-right-hand.html">reference sheet</a>
+</footer>
+</div>
+
+<script>
+// ---- Chord shapes: strings low-E(6) -> high-E(1). fret 0=open, -1=muted; fingers 1-4. ----
+// bassPair = the two strings the thumb alternates: [low string, high string], each {string,fret}.
+const CHORDS={
+  G: {frets:[3,2,0,0,0,3], fingers:[2,1,0,0,0,3], bassPair:[{string:6,fret:3},{string:4,fret:0}]},
+  Em:{frets:[0,2,2,0,0,0], fingers:[0,2,3,0,0,0], bassPair:[{string:6,fret:0},{string:4,fret:2}]},
+  C: {frets:[-1,3,2,0,1,0],fingers:[0,3,2,0,1,0], bassPair:[{string:5,fret:3},{string:4,fret:0}]},
+  D: {frets:[-1,-1,0,2,3,2],fingers:[0,0,0,1,3,2],bassPair:[{string:4,fret:0},{string:3,fret:2}]},
+};
+// The practice loop — one chord per bar, 4 bars, then repeat.
+const LOOP=["G","Em","C","D"];
+const BARS=LOOP.length;
+
+// Open-string pitches (Hz) for strings 6..1 (low E .. high E). Used to synth any fretted note.
+const OPEN={6:82.41,5:110.00,4:146.83,3:196.00,2:246.94,1:329.63};
+function freq(string,fret){ return OPEN[string]*Math.pow(2,fret/12); }
+
+// ---- Draw a chord diagram (same style as the other lessons) ----
+function chordSVG(name){
+  const c=CHORDS[name];
+  const W=104,H=124,padX=16,padTop=26,rows=4,cols=6;
+  const gridW=W-padX*2,gridH=76,colGap=gridW/(cols-1),rowGap=gridH/rows;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  s+=`<rect x="${padX}" y="${padTop}" width="${gridW}" height="2.6" fill="#1c1a17"/>`;
+  for(let r=1;r<=rows;r++){const y=padTop+r*rowGap;s+=`<line x1="${padX}" y1="${y}" x2="${padX+gridW}" y2="${y}" stroke="#b9b0a0"/>`;}
+  for(let col=0;col<cols;col++){const x=padX+col*colGap;s+=`<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop+gridH}" stroke="#b9b0a0"/>`;}
+  c.frets.forEach((f,i)=>{
+    const x=padX+i*colGap;
+    if(f===-1){s+=`<text x="${x}" y="${padTop-8}" text-anchor="middle" font-size="12" fill="#6b6459">✕</text>`;}
+    else if(f===0){s+=`<circle cx="${x}" cy="${padTop-11}" r="4.5" fill="none" stroke="#1c1a17" stroke-width="1.4"/>`;}
+    else{
+      const y=padTop+(f-0.5)*rowGap, fg=c.fingers[i];
+      s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="#1c1a17"/>`;
+      if(fg>0)s+=`<text x="${x}" y="${y+3.6}" text-anchor="middle" font-size="10.5" fill="#fff" font-family="sans-serif">${fg}</text>`;
+    }
+  });
+  s+=`</svg>`;return s;
+}
+
+// ---- Travis patterns ----
+// 8 eighth-note slots per bar. Even slots (0,2,4,6) = beats 1-4 = THUMB (bass). bi picks which
+// bass string: 0 = low, 1 = high, alternating. Odd slots (the "&"s) = FINGER plucks on treble strings.
+//   type: 'bass' (thumb, uses bi), 'fing' (finger, uses string+finger), 'rest' (hand rests).
+function patternFor(mode){
+  const lbl = i => (i%2===0 ? String(i/2+1) : "&"); // 1 & 2 & 3 & 4 &
+  let steps;
+  if(mode==="thumb"){
+    // thumb alternates low/high on every beat; nothing on the &s
+    steps=[{type:"bass",bi:0},{type:"rest"},{type:"bass",bi:1},{type:"rest"},
+           {type:"bass",bi:0},{type:"rest"},{type:"bass",bi:1},{type:"rest"}];
+  }else{
+    // full roll: same alternating thumb, plus a finger pluck on each & (a gentle harp roll on strings 2 & 1)
+    steps=[{type:"bass",bi:0},{type:"fing",string:2,finger:"m"},
+           {type:"bass",bi:1},{type:"fing",string:1,finger:"a"},
+           {type:"bass",bi:0},{type:"fing",string:2,finger:"m"},
+           {type:"bass",bi:1},{type:"fing",string:1,finger:"a"}];
+  }
+  return steps.map((st,i)=>({...st,lbl:lbl(i)}));
+}
+const PATNOTE={
+  thumb:"p · p · p · p — thumb only: low, high, low, high (one per beat)",
+  roll:"thumb on every beat + a finger pluck on each & — the rolling Travis pattern",
+};
+
+// ---- State ----
+let mode="thumb", audioCtx=null, timer=null;
+let slot=0;            // 0..7 within the current bar (eighth notes)
+let bar=0;             // 0..BARS-1 index into LOOP
+let counting=false, countSlot=0; // count-in state
+
+const modepick=document.getElementById("modepick");
+const nowName=document.getElementById("nowName"), nowRole=document.getElementById("nowRole"), nowNext=document.getElementById("nowNext");
+const dcard=document.getElementById("dcard"), lane=document.getElementById("lane"), laneNote=document.getElementById("laneNote");
+const tempo=document.getElementById("tempo"), bpm=document.getElementById("bpm");
+const startBtn=document.getElementById("startBtn"), stopBtn=document.getElementById("stopBtn");
+const countIn=document.getElementById("countIn"), chords=document.getElementById("chords");
+tempo.addEventListener("input",()=>{bpm.textContent=tempo.value; if(timer){clearInterval(timer);timer=setInterval(tick,interval());}});
+chords.addEventListener("change",renderBar);
+
+// Build the 8 lane cells once; we re-fill their contents each bar/mode.
+const cells=[];
+for(let i=0;i<8;i++){const d=document.createElement("div");d.className="cell";lane.appendChild(d);cells.push(d);}
+
+function renderBar(){
+  const name=LOOP[bar];
+  const nextName=LOOP[(bar+1)%BARS];   // chord for the upcoming bar — prepare the hand for it
+  const pair=CHORDS[name].bassPair;    // the two bass strings this bar
+  nowName.textContent = chords.checked ? name : "—";
+  nowRole.textContent = "bar "+(bar+1)+" of "+BARS;
+  nowNext.innerHTML = "next → <b>"+(chords.checked ? nextName : "—")+"</b>";
+  dcard.parentElement.style.display = chords.checked ? "flex" : "none";
+  if(chords.checked) dcard.innerHTML=chordSVG(name);
+  const pat = patternFor(mode);
+  cells.forEach((cell,i)=>{
+    const step=pat[i];
+    let html;
+    if(step.type==="bass"){
+      const str=pair[step.bi].string;                                   // which bass string plays now
+      html=`<div class="thumb">p</div><div class="lbl">${step.lbl} · str ${str}</div>`;
+    }else if(step.type==="fing"){
+      html=`<div class="fing">${step.finger}</div><div class="lbl">${step.lbl} · str ${step.string}</div>`;
+    }else{
+      html=`<div class="rest">·</div><div class="lbl">${step.lbl}</div>`;
+    }
+    cell.innerHTML=html;
+    cell.classList.remove("active");
+  });
+  laneNote.textContent = PATNOTE[mode];
+}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll("#modepick button").forEach(b=>b.classList.toggle("sel",b.dataset.m===m));
+  renderBar();
+}
+modepick.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ if(!timer){bar=0;} setMode(b.dataset.m); }));
+
+// ---- Sounds ----
+// Metronome click: strong on beat 1, softer on the other beats. Clicks EVERY beat.
+function metroClick(strong){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.frequency.value=strong?1100:760;
+  g.gain.setValueAtTime(strong?0.5:0.24,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.06);
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.07);
+}
+// A plucked-string tone. `bright` = a finger note (higher, softer); otherwise the thumb bass (louder).
+function tone(f, bright){
+  if(!audioCtx)return;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type="triangle"; o.frequency.value=f;
+  g.gain.setValueAtTime(0.0001,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(bright?0.30:0.5,audioCtx.currentTime+(bright?0.006:0.01));
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+(bright?0.40:0.30));
+  o.connect(g).connect(audioCtx.destination);
+  o.start();o.stop(audioCtx.currentTime+0.45);
+}
+
+// Interval = one EIGHTH note. BPM counts quarter notes, so eighth = 30000/BPM ms.
+function interval(){return 30000/parseInt(tempo.value,10);}
+
+function tick(){
+  // Count-in: one bar (4 quarter clicks) before the loop starts.
+  if(counting){
+    if(countSlot%2===0){ metroClick(countSlot===0); nowRole.textContent="count-in "+(countSlot/2+1); }
+    countSlot++;
+    if(countSlot>=8){ counting=false; slot=0; bar=0; renderBar(); }
+    return;
+  }
+  // move the cursor
+  cells.forEach(c=>c.classList.remove("active"));
+  cells[slot].classList.add("active");
+  // metronome clicks on every beat (even slots); strong on beat 1 of the bar
+  if(slot%2===0) metroClick(slot===0);
+  // play the event for this slot: thumb bass or finger pluck
+  const name=LOOP[bar], step=patternFor(mode)[slot];
+  if(step.type==="bass"){
+    const b=CHORDS[name].bassPair[step.bi];
+    tone(freq(b.string,b.fret), false);                       // thumb bass note
+  }else if(step.type==="fing"){
+    const fret=CHORDS[name].frets[6-step.string];             // this string's fret in the held shape
+    tone(freq(step.string, fret), true);                      // finger pluck (treble)
+  }
+  // advance
+  slot++;
+  if(slot>=8){
+    slot=0;
+    bar=(bar+1)%BARS;
+    renderBar();
+  }
+}
+
+function start(){
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(timer)return;
+  bar=0; slot=0;
+  if(countIn.checked){ counting=true; countSlot=0; } else { counting=false; renderBar(); }
+  tick();
+  timer=setInterval(tick,interval());
+  startBtn.disabled=true; stopBtn.disabled=false;
+}
+function stop(){
+  clearInterval(timer); timer=null; counting=false;
+  cells.forEach(c=>c.classList.remove("active"));
+  bar=0; slot=0; renderBar();
+  startBtn.disabled=false; stopBtn.disabled=true;
+}
+startBtn.addEventListener("click",start);
+stopBtn.addEventListener("click",stop);
+
+// init
+renderBar();
+</script>
+</body>
+</html>
