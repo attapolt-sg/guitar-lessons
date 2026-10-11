@@ -6,12 +6,28 @@
 <title>Lesson 02 · Clean Fingers — Every String Rings</title>
 <style>
   :root{
-    --ink:#1c1a17; --muted:#6b6459; --line:#ddd5c7; --accent:#a8541f;
-    --paper:#fbf8f2; --panel:#fff; --good:#2e7d32; --bad:#b3402f; --glow:#e8b04b;
+    --bg:#f5f5f7; --surface:#ffffff; --ink:#1d1d1f; --muted:#6e6e73;
+    --accent:#0071e3; --line:#d2d2d7; --hairline:#e8e8ed;
+    --good:#1f8f43; --bad:#d7392b; --glow:#0071e3;
+    --paper:#f5f5f7; --panel:#ffffff;
+    --code-bg:#1e1e2e; --code-fg:#cdd6f4;
+    --inline-code-bg:#f0f0f3; --inline-code-fg:#c7254e;
+    --shadow:0 4px 24px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#000000; --surface:#1c1c1e; --ink:#f5f5f7; --muted:#98989d;
+      --accent:#0a84ff; --line:#38383a; --hairline:#2c2c2e;
+      --good:#30d158; --bad:#ff6961; --glow:#0a84ff;
+      --paper:#000000; --panel:#1c1c1e;
+      --inline-code-bg:#2c2c2e; --inline-code-fg:#ff8bbd;
+      --shadow:0 4px 24px rgba(0,0,0,.4);
+    }
   }
   *{box-sizing:border-box;}
-  body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--ink);background:var(--paper);margin:0;line-height:1.65;}
-  .wrap{max-width:780px;margin:0 auto;padding:44px 26px 90px;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.65;-webkit-font-smoothing:antialiased;padding:3rem 1rem 6rem;}
+  .wrap{max-width:820px;margin:0 auto;background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:40px 44px 56px;}
+  @media (max-width:640px){.wrap{padding:28px 22px 44px;border-radius:14px;}body{padding:1.5rem .8rem 4rem;}}
   header{border-bottom:3px double var(--line);padding-bottom:18px;}
   .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;}
   h1{font-size:33px;margin:6px 0 6px;letter-spacing:-.01em;}
@@ -19,13 +35,13 @@
   h3{font-size:18px;margin:22px 0 6px;}
   p,li{font-size:17px;}
   .sub{color:var(--muted);font-size:15px;}
-  .goal{background:#f6efe2;border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
+  .goal{background:color-mix(in srgb,var(--accent) 8%,var(--surface));border:1px solid var(--line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:8px;margin:18px 0;}
   .step{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:14px 0;}
   .step .n{display:inline-block;background:var(--accent);color:#fff;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-family:sans-serif;font-size:14px;margin-right:8px;}
-  code{background:#efe8db;padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
+  code{background:var(--inline-code-bg);padding:1px 6px;border-radius:4px;font-family:"SF Mono",Menlo,monospace;font-size:14px;}
   a{color:var(--accent);}
-  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:#fdfbf6;}
-  .myth{background:#eef3ec;border:1px solid #cfe0cb;border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
+  .tip{border:1px dashed var(--line);border-radius:8px;padding:10px 16px;margin:14px 0;background:color-mix(in srgb,var(--muted) 5%,var(--surface));}
+  .myth{background:color-mix(in srgb,var(--good) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--good) 22%,var(--surface));border-left:4px solid var(--good);padding:12px 16px;border-radius:8px;margin:16px 0;}
 
   /* fix cards */
   .fixes{display:flex;flex-direction:column;gap:12px;margin:16px 0;}
@@ -36,18 +52,18 @@
   /* Diagnostic checker */
   .checker{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);}
   .chordpick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
-  .chordpick button{font-family:inherit;font-size:16px;background:#fff;color:var(--accent);border:1px solid var(--accent);padding:8px 18px;border-radius:8px;cursor:pointer;}
+  .chordpick button{font-family:inherit;font-size:16px;background:var(--surface);color:var(--accent);border:1px solid var(--accent);padding:8px 18px;border-radius:8px;cursor:pointer;}
   .chordpick button.sel{background:var(--accent);color:#fff;}
   .layout{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;margin-top:10px;}
   .diagram{flex:0 0 auto;}
   .strings{flex:1;min-width:260px;}
-  .strow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #eee5d5;}
+  .strow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--muted) 8%,var(--surface));}
   .slabel{width:120px;font-size:15px;}
   .slabel .muted{color:var(--muted);font-size:13px;}
   .srow-btns{display:flex;gap:8px;}
-  .mini{font-family:inherit;font-size:14px;border-radius:7px;padding:6px 12px;cursor:pointer;border:1px solid var(--line);background:#faf6ee;}
-  .mini.clean.on{background:#e5f2e5;border-color:var(--good);color:var(--good);font-weight:700;}
-  .mini.buzz.on{background:#f7e3e0;border-color:var(--bad);color:var(--bad);font-weight:700;}
+  .mini{font-family:inherit;font-size:14px;border-radius:7px;padding:6px 12px;cursor:pointer;border:1px solid var(--line);background:color-mix(in srgb,var(--muted) 6%,var(--surface));}
+  .mini.clean.on{background:color-mix(in srgb,var(--good) 16%,var(--surface));border-color:var(--good);color:var(--good);font-weight:700;}
+  .mini.buzz.on{background:color-mix(in srgb,var(--bad) 14%,var(--surface));border-color:var(--bad);color:var(--bad);font-weight:700;}
   .verdict{margin-top:14px;font-size:16px;min-height:24px;font-family:sans-serif;}
   .verdict.win{color:var(--good);font-weight:700;}
   footer{margin-top:46px;border-top:1px solid var(--line);padding-top:16px;font-size:14px;color:var(--muted);}
@@ -123,7 +139,7 @@ B string buzzed"). That tells me whether to keep polishing open chords or move o
 you want — I can often spot a flat finger or a low thumb instantly.</div>
 
 <footer>
-  Lesson 02 · Guitar workspace · Chord shapes per the
+  <a href="../index.html">← All lessons</a> · Lesson 02 · Guitar workspace · Chord shapes per the
   <a href="../reference/00-chords-and-right-hand.html">Chords &amp; Right-Hand reference</a> ·
   Structured course home: <a href="https://www.justinguitar.com/guitar-lessons">JustinGuitar</a>.
 </footer>
